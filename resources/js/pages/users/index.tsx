@@ -55,7 +55,7 @@ export default function UsersIndex() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
             <div className="text-sm text-gray-500 dark:text-gray-400">Total Users</div>
             <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{pagination.total || 0}</div>
@@ -78,7 +78,7 @@ export default function UsersIndex() {
               {pagination.current_page || 1} of {pagination.last_page || 1}
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-4">
           <DataTable 

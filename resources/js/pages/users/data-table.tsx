@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table"
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 import { router } from "@inertiajs/react"
+import { BreadcrumbItem } from "@/types"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -42,6 +43,13 @@ interface DataTableProps<TData, TValue> {
     per_page?: number
   }
 }
+
+const breadcrumbs: BreadcrumbItem[] = [
+  {
+      title: 'Admin Users',
+      href: '/users',
+  },
+];
 
 export function DataTable<TData, TValue>({
   columns,
