@@ -1,13 +1,21 @@
 import FormDialog from '@/components/dialog/form-dialog';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Ring } from 'ldrs/react';
 import 'ldrs/react/Ring.css';
 import { FormEventHandler, ReactNode } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
 
 interface CustomerFormProps {
     data: {
@@ -34,7 +42,16 @@ interface CustomerFormProps {
     [key: string]: unknown;
 }
 
-export default function CustomerForm({ data, setData, processing, errors, submit, trigger, open, setOpen }: CustomerFormProps) {
+export default function CustomerForm({
+    data,
+    setData,
+    processing,
+    errors,
+    submit,
+    trigger,
+    open,
+    setOpen,
+}: CustomerFormProps) {
     return (
         <form>
             <FormDialog
@@ -51,7 +68,9 @@ export default function CustomerForm({ data, setData, processing, errors, submit
                                 required
                                 autoComplete="name"
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
                                 disabled={processing}
                                 placeholder="Customer name"
                             />
@@ -66,7 +85,9 @@ export default function CustomerForm({ data, setData, processing, errors, submit
                                 required
                                 autoComplete="email"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
                                 disabled={processing}
                                 placeholder="Customer email"
                             />
@@ -79,7 +100,14 @@ export default function CustomerForm({ data, setData, processing, errors, submit
                                 id="avatar"
                                 type="file"
                                 accept="image/*"
-                                onChange={(e) => setData('avatar', e.target.files ? e.target.files[0] : null)}
+                                onChange={(e) =>
+                                    setData(
+                                        'avatar',
+                                        e.target.files
+                                            ? e.target.files[0]
+                                            : null,
+                                    )
+                                }
                                 disabled={processing || data.remove_avatar}
                             />
                             <InputError message={errors.avatar} />
@@ -92,7 +120,10 @@ export default function CustomerForm({ data, setData, processing, errors, submit
                                 checked={data.remove_avatar}
                                 onClick={() => {
                                     setData('avatar', null);
-                                    setData('remove_avatar', !data.remove_avatar);
+                                    setData(
+                                        'remove_avatar',
+                                        !data.remove_avatar,
+                                    );
                                 }}
                                 tabIndex={3}
                             />
@@ -101,15 +132,27 @@ export default function CustomerForm({ data, setData, processing, errors, submit
 
                         <div className="grid gap-2">
                             <Label htmlFor="type">Type</Label>
-                            <Select value={data.type} onValueChange={(value) => setData('type', value)} disabled={processing}>
+                            <Select
+                                value={data.type}
+                                onValueChange={(value) =>
+                                    setData('type', value)
+                                }
+                                disabled={processing}
+                            >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select customer type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectLabel className="text-muted-foreground">Type</SelectLabel>
-                                        <SelectItem value="individual">Individual</SelectItem>
-                                        <SelectItem value="business">Business</SelectItem>
+                                        <SelectLabel className="text-muted-foreground">
+                                            Type
+                                        </SelectLabel>
+                                        <SelectItem value="individual">
+                                            Individual
+                                        </SelectItem>
+                                        <SelectItem value="business">
+                                            Business
+                                        </SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
@@ -119,7 +162,14 @@ export default function CustomerForm({ data, setData, processing, errors, submit
                 }
                 formButton={
                     <Button disabled={processing} onClick={submit}>
-                        {processing && <Ring size="14" stroke="2" speed="2.5" color="gray" />}
+                        {processing && (
+                            <Ring
+                                size="14"
+                                stroke="2"
+                                speed="2.5"
+                                color="gray"
+                            />
+                        )}
                         Save Customer
                     </Button>
                 }

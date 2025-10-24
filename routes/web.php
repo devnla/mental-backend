@@ -1,13 +1,12 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ExportController;
-use Illuminate\Http\Request;
-use App\Models\User;
 
 Route::get('/', function () {
     return Inertia::render('welcome', [

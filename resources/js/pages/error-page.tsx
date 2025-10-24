@@ -1,4 +1,3 @@
-import React from 'react';
 import AuthLayout from '@/layouts/auth-layout';
 
 interface ErrorPageProps {
@@ -97,7 +96,8 @@ const descriptions: Record<number, string> = {
 
 export default function ErrorPage({ status }: ErrorPageProps) {
     const title = titles[status] ?? `${status}: Error`;
-    const description = descriptions[status] ?? 'An unexpected error has occurred.';
+    const description =
+        descriptions[status] ?? 'An unexpected error has occurred.';
 
     return (
         <div>

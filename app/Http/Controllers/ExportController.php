@@ -24,7 +24,7 @@ class ExportController extends Controller
 
     private function exportCustomers(User $user): StreamedResponse
     {
-        $filename = 'customers-export-' . now()->format('Y-m-d') . '.csv';
+        $filename = 'customers-export-'.now()->format('Y-m-d').'.csv';
 
         $customers = \App\Models\Customer::where('user_id', $user->id)
             ->orderByDesc('created_at')

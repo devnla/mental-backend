@@ -22,7 +22,7 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('customers', 'email')->ignore($this->customer)
+                Rule::unique('customers', 'email')->ignore($this->customer),
             ],
             'avatar' => ['nullable', File::image()->max(1024)], // 1MB max
             'remove_avatar' => ['boolean'],

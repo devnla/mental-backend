@@ -1,6 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { ChevronFirst, ChevronLast, ChevronLeft, ChevronRight } from 'lucide-react';
-import { RowModel } from '@tanstack/react-table';
 import {
     Select,
     SelectContent,
@@ -9,6 +7,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useMediaQuery } from '@/hooks/use-media-query';
+import { RowModel } from '@tanstack/react-table';
+import {
+    ChevronFirst,
+    ChevronLast,
+    ChevronLeft,
+    ChevronRight,
+} from 'lucide-react';
 
 interface Pagination<T> {
     pageIndex: number;
@@ -36,7 +41,9 @@ interface DataTablePaginationProps<T> {
     pagination: Pagination<T>;
 }
 
-export default function DataTablePagination<T>({ pagination }: DataTablePaginationProps<T>) {
+export default function DataTablePagination<T>({
+    pagination,
+}: DataTablePaginationProps<T>) {
     const isDesktop = useMediaQuery('(min-width: 640px)');
     const totalPages = pagination.getPageCount();
     const currentPage = pagination.getState().pagination.pageIndex;
@@ -59,18 +66,26 @@ export default function DataTablePagination<T>({ pagination }: DataTablePaginati
 
     return (
         <div className="mt-6 flex flex-col items-center justify-between gap-y-4 lg:flex-row lg:gap-y-0">
-            <div className="flex flex-col lg:flex-row items-center gap-x-4 gap-y-4 lg:gap-y-0">
+            <div className="flex flex-col items-center gap-x-4 gap-y-4 lg:flex-row lg:gap-y-0">
                 <div className="text-sm">
-                    Showing {pagination.getState().pagination.pageIndex * pagination.getState().pagination.pageSize + 1} to{' '}
+                    Showing{' '}
+                    {pagination.getState().pagination.pageIndex *
+                        pagination.getState().pagination.pageSize +
+                        1}{' '}
+                    to{' '}
                     {Math.min(
-                        (pagination.getState().pagination.pageIndex + 1) * pagination.getState().pagination.pageSize,
+                        (pagination.getState().pagination.pageIndex + 1) *
+                            pagination.getState().pagination.pageSize,
                         pagination.getFilteredRowModel().rows.length,
                     )}{' '}
                     of {pagination.getFilteredRowModel().rows.length} results
                 </div>
                 <div className="flex items-center gap-x-2">
                     <span className="text-sm">Show</span>
-                    <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
+                    <Select
+                        value={pageSize.toString()}
+                        onValueChange={handlePageSizeChange}
+                    >
                         <SelectTrigger className="h-8 w-[70px]">
                             <SelectValue placeholder={pageSize.toString()} />
                         </SelectTrigger>
@@ -107,11 +122,17 @@ export default function DataTablePagination<T>({ pagination }: DataTablePaginati
 
                 {(() => {
                     // Add leading pages
-                    for (let i = 0; i < Math.min(leadingPages, totalPages); i++) {
+                    for (
+                        let i = 0;
+                        i < Math.min(leadingPages, totalPages);
+                        i++
+                    ) {
                         pages.push(
                             <Button
                                 key={i}
-                                variant={currentPage === i ? 'default' : 'ghost'}
+                                variant={
+                                    currentPage === i ? 'default' : 'ghost'
+                                }
                                 size="sm"
                                 onClick={() => pagination.setPageIndex(i)}
                                 disabled={currentPage === i}
@@ -125,22 +146,39 @@ export default function DataTablePagination<T>({ pagination }: DataTablePaginati
                     // Add ellipsis after leading pages if there's a gap
                     if (currentPage - surroundingPages > leadingPages) {
                         pages.push(
-                            <Button key="ellipsis1" variant="ghost" size="sm" disabled className="min-w-[20px] cursor-default">
+                            <Button
+                                key="ellipsis1"
+                                variant="ghost"
+                                size="sm"
+                                disabled
+                                className="min-w-[20px] cursor-default"
+                            >
                                 ...
                             </Button>,
                         );
                     }
 
                     // Add pages around current page (if not already included in leading/trailing pages)
-                    const startMiddle = Math.max(leadingPages, currentPage - surroundingPages);
-                    const endMiddle = Math.min(totalPages - trailingPages - 1, currentPage + surroundingPages);
+                    const startMiddle = Math.max(
+                        leadingPages,
+                        currentPage - surroundingPages,
+                    );
+                    const endMiddle = Math.min(
+                        totalPages - trailingPages - 1,
+                        currentPage + surroundingPages,
+                    );
 
                     for (let i = startMiddle; i <= endMiddle; i++) {
-                        if (i < totalPages - trailingPages && i >= leadingPages) {
+                        if (
+                            i < totalPages - trailingPages &&
+                            i >= leadingPages
+                        ) {
                             pages.push(
                                 <Button
                                     key={i}
-                                    variant={currentPage === i ? 'default' : 'ghost'}
+                                    variant={
+                                        currentPage === i ? 'default' : 'ghost'
+                                    }
                                     size="sm"
                                     onClick={() => pagination.setPageIndex(i)}
                                     disabled={currentPage === i}
@@ -153,20 +191,38 @@ export default function DataTablePagination<T>({ pagination }: DataTablePaginati
                     }
 
                     // Add ellipsis before trailing pages if there's a gap
-                    if (currentPage + surroundingPages < totalPages - trailingPages - 1) {
+                    if (
+                        currentPage + surroundingPages <
+                        totalPages - trailingPages - 1
+                    ) {
                         pages.push(
-                            <Button key="ellipsis2" variant="ghost" size="sm" disabled className="min-w-[20px] cursor-default">
+                            <Button
+                                key="ellipsis2"
+                                variant="ghost"
+                                size="sm"
+                                disabled
+                                className="min-w-[20px] cursor-default"
+                            >
                                 ...
                             </Button>,
                         );
                     }
 
                     // Add trailing pages
-                    for (let i = Math.max(leadingPages, totalPages - trailingPages); i < totalPages; i++) {
+                    for (
+                        let i = Math.max(
+                            leadingPages,
+                            totalPages - trailingPages,
+                        );
+                        i < totalPages;
+                        i++
+                    ) {
                         pages.push(
                             <Button
                                 key={i}
-                                variant={currentPage === i ? 'default' : 'ghost'}
+                                variant={
+                                    currentPage === i ? 'default' : 'ghost'
+                                }
                                 size="sm"
                                 onClick={() => pagination.setPageIndex(i)}
                                 disabled={currentPage === i}
@@ -193,7 +249,9 @@ export default function DataTablePagination<T>({ pagination }: DataTablePaginati
                 <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => pagination.setPageIndex(pagination.getPageCount() - 1)}
+                    onClick={() =>
+                        pagination.setPageIndex(pagination.getPageCount() - 1)
+                    }
                     disabled={!pagination.getCanNextPage()}
                     className="min-w-[20px]"
                 >

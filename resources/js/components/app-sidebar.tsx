@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Users2 } from 'lucide-react';
+import { LayoutGrid, Users, Users2 } from 'lucide-react';
 
 // Route helper is available globally
 import AppLogo from './app-logo';
@@ -36,9 +36,7 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
-
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (

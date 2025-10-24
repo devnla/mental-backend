@@ -1,7 +1,14 @@
 import { DataTableFilter } from '@/components/data-table/data-table-filter';
 import DataTablePagination from '@/components/data-table/data-table-pagination';
 import { DataTableSort } from '@/components/data-table/data-table-sort';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 import {
     ColumnDef,
     flexRender,
@@ -38,14 +45,23 @@ export function DataTable<TData, TValue>({
     usePagination = true,
 }: DataTableProps<TData, TValue>) {
     const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [globalFilter, setGlobalFilter] = React.useState<string>(show ? show : '');
-    const [selectedSortColumn, setSelectedSortColumn] = React.useState<string>('');
-    const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>('asc');
+    const [globalFilter, setGlobalFilter] = React.useState<string>(
+        show ? show : '',
+    );
+    const [selectedSortColumn, setSelectedSortColumn] =
+        React.useState<string>('');
+    const [sortDirection, setSortDirection] = React.useState<'asc' | 'desc'>(
+        'asc',
+    );
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
         pageSize: 20,
     });
-    const fuzzyFilter = (row: Row<TData>, columnId: string, filterValue: string) => {
+    const fuzzyFilter = (
+        row: Row<TData>,
+        columnId: string,
+        filterValue: string,
+    ) => {
         const value = String(row.getValue(columnId)).toLowerCase();
         return value.includes(String(filterValue).toLowerCase());
     };
@@ -115,7 +131,13 @@ export function DataTable<TData, TValue>({
                                 {headerGroup.headers.map((header) => {
                                     return (
                                         <TableHead key={header.id}>
-                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                      header.column.columnDef
+                                                          .header,
+                                                      header.getContext(),
+                                                  )}
                                         </TableHead>
                                     );
                                 })}
@@ -125,15 +147,28 @@ export function DataTable<TData, TValue>({
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                                <TableRow
+                                    key={row.id}
+                                    data-state={
+                                        row.getIsSelected() && 'selected'
+                                    }
+                                >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext(),
+                                            )}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
                                     No results.
                                 </TableCell>
                             </TableRow>

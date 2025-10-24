@@ -10,7 +10,7 @@ export default function AppLogo() {
                 <span className="mb-0.5 truncate leading-tight font-semibold">
                     Backend Project
                 </span>
-                <span className="text-xs text-sidebar-secondary-foreground">
+                <span className="text-sidebar-secondary-foreground text-xs">
                     React & Inertia.js
                 </span>
             </div>

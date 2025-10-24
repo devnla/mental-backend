@@ -8,6 +8,7 @@ import { useInitials } from '@/hooks/use-initials';
 import AppLayout from '@/layouts/app-layout';
 import AddCustomerForm from '@/pages/customers/add-customer-form';
 import DeleteCustomerForm from '@/pages/customers/delete-customer-form';
+import { dataExport } from '@/routes';
 import { type BreadcrumbItem, Customer } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
@@ -16,7 +17,6 @@ import { Download, Plus, SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import EditCustomerForm from './edit-customer-form';
-import { dataExport } from '@/routes';
 
 interface CustomersPageProps {
     app: {
@@ -47,7 +47,9 @@ export default function Customers({ customers, show }: CustomersPageProps) {
     const { app, flash } = usePage<CustomersPageProps>().props;
     const getInitials = useInitials();
 
-    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+        null,
+    );
     const [editDialogOpen, setEditDialogOpen] = useState(false);
 
     const openEditDialog = (customer: Customer) => {
@@ -85,7 +87,11 @@ export default function Customers({ customers, show }: CustomersPageProps) {
             accessorKey: 'customer_number',
             header: () => <div className="text-center">ID</div>,
             cell: ({ row }) => {
-                return <div className="text-center">{row.getValue('customer_number')}</div>;
+                return (
+                    <div className="text-center">
+                        {row.getValue('customer_number')}
+                    </div>
+                );
             },
         },
         {
@@ -97,12 +103,21 @@ export default function Customers({ customers, show }: CustomersPageProps) {
                 return (
                     <div className="flex flex-row items-center gap-x-2">
                         <Avatar className="h-8 w-8 overflow-hidden">
-                            <AvatarImage src={customer.avatar ? `/storage/${customer.avatar}` : undefined} alt={customer.name} />
+                            <AvatarImage
+                                src={
+                                    customer.avatar
+                                        ? `/storage/${customer.avatar}`
+                                        : undefined
+                                }
+                                alt={customer.name}
+                            />
                             <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                                 {getInitials(customer.name)}
                             </AvatarFallback>
                         </Avatar>
-                        <div className="text-start font-medium">{customer.name}</div>
+                        <div className="text-start font-medium">
+                            {customer.name}
+                        </div>
                     </div>
                 );
             },
@@ -112,7 +127,11 @@ export default function Customers({ customers, show }: CustomersPageProps) {
             accessorKey: 'email',
             header: () => <div className="text-start">Contact</div>,
             cell: ({ row }) => {
-                return <div className="text-start font-medium">{row.getValue('email')}</div>;
+                return (
+                    <div className="text-start font-medium">
+                        {row.getValue('email')}
+                    </div>
+                );
             },
         },
         {
@@ -121,14 +140,20 @@ export default function Customers({ customers, show }: CustomersPageProps) {
             header: () => <div className="text-center">Type</div>,
             cell: ({ row }) => {
                 const type: 'individual' | 'business' = row.getValue('type');
-                const variantMap: Record<Customer['type'], VariantProps<typeof badgeVariants>['variant']> = {
+                const variantMap: Record<
+                    Customer['type'],
+                    VariantProps<typeof badgeVariants>['variant']
+                > = {
                     individual: 'secondary',
                     business: 'default',
                 };
 
                 return (
                     <div className="flex flex-row items-center justify-end gap-x-2">
-                        <Badge variant={variantMap[type]} className="text-md w-full font-medium capitalize">
+                        <Badge
+                            variant={variantMap[type]}
+                            className="text-md w-full font-medium capitalize"
+                        >
                             {type}
                         </Badge>
                     </div>
@@ -140,7 +165,11 @@ export default function Customers({ customers, show }: CustomersPageProps) {
             accessorKey: 'sales_count',
             header: () => <div className="text-center">Sales Count</div>,
             cell: ({ row }) => {
-                return <div className="text-center">{row.getValue('sales_count')}</div>;
+                return (
+                    <div className="text-center">
+                        {row.getValue('sales_count')}
+                    </div>
+                );
             },
         },
         {
@@ -167,7 +196,10 @@ export default function Customers({ customers, show }: CustomersPageProps) {
 
                 return (
                     <div className="flex flex-row items-center justify-center gap-x-2">
-                        <SquarePen className="size-5 cursor-pointer text-primary hover:text-primary/70 active:scale-95 transition-transform duration-300" onClick={() => openEditDialog(customer)} />
+                        <SquarePen
+                            className="size-5 cursor-pointer text-primary transition-transform duration-300 hover:text-primary/70 active:scale-95"
+                            onClick={() => openEditDialog(customer)}
+                        />
                         <DeleteCustomerForm customer={customer} />
                     </div>
                 );
@@ -191,7 +223,10 @@ export default function Customers({ customers, show }: CustomersPageProps) {
 
             <div className="p-4">
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-                    <Heading title="Customers" description="Manage your customers and their details." />
+                    <Heading
+                        title="Customers"
+                        description="Manage your customers and their details."
+                    />
 
                     <div className="flex flex-row items-center gap-x-4 sm:justify-center">
                         <AddCustomerForm>
@@ -202,7 +237,13 @@ export default function Customers({ customers, show }: CustomersPageProps) {
                         </AddCustomerForm>
 
                         <Button variant="ghost" asChild>
-                            <a href={dataExport.url({ type: 'customers' })} download target="_blank" rel="noopener" className="flex items-center gap-x-2">
+                            <a
+                                href={dataExport.url({ type: 'customers' })}
+                                download
+                                target="_blank"
+                                rel="noopener"
+                                className="flex items-center gap-x-2"
+                            >
                                 <Download className="size-5" />
                                 Export
                             </a>
@@ -211,10 +252,21 @@ export default function Customers({ customers, show }: CustomersPageProps) {
                 </div>
 
                 <div>
-                    <DataTable columns={columns} data={customers} sortableColumns={sortableColumns} show={show} />
+                    <DataTable
+                        columns={columns}
+                        data={customers}
+                        sortableColumns={sortableColumns}
+                        show={show}
+                    />
                 </div>
 
-                {selectedCustomer && <EditCustomerForm customer={selectedCustomer} open={editDialogOpen} setOpen={setEditDialogOpen} />}
+                {selectedCustomer && (
+                    <EditCustomerForm
+                        customer={selectedCustomer}
+                        open={editDialogOpen}
+                        setOpen={setEditDialogOpen}
+                    />
+                )}
             </div>
         </AppLayout>
     );

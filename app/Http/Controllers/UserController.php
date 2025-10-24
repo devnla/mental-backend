@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -19,35 +18,35 @@ class UserController extends Controller
     {
         // Get search term
         $search = $request->get('search');
-        
+
         // Get sorting parameters
         $sort = $request->get('sort', 'id'); // Default sort by id
         $direction = $request->get('direction', 'desc'); // Default descending
-        
+
         // Get pagination parameters
         $perPage = $request->get('per_page', 10); // Default 10 items per page
-        
+
         // Build query
         $query = User::query();
-        
+
         // Apply search filter
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
+
         // Apply sorting
         $allowedSortColumns = ['id', 'name', 'email', 'email_verified_at', 'created_at', 'updated_at'];
         $sortColumn = in_array($sort, $allowedSortColumns) ? $sort : 'id';
         $sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'desc';
-        
+
         $query->orderBy($sortColumn, $sortDirection);
-        
+
         // Apply pagination
         $users = $query->paginate($perPage)->withQueryString();
-        
+
         // Get pagination info
         $paginationInfo = [
             'current_page' => $users->currentPage(),
@@ -114,7 +113,7 @@ class UserController extends Controller
     public function show(User $user): Response
     {
         return Inertia::render('users/show', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -124,7 +123,7 @@ class UserController extends Controller
     public function edit(User $user): Response
     {
         return Inertia::render('users/edit', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -144,7 +143,7 @@ class UserController extends Controller
             'email' => $validated['email'],
         ];
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $updateData['password'] = bcrypt($validated['password']);
         }
 
@@ -174,22 +173,22 @@ class UserController extends Controller
         $sort = $request->get('sort', 'id');
         $direction = $request->get('direction', 'desc');
         $perPage = $request->get('per_page', 10);
-        
+
         $query = User::query();
-        
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
+
         $allowedSortColumns = ['id', 'name', 'email', 'email_verified_at', 'created_at', 'updated_at'];
         $sortColumn = in_array($sort, $allowedSortColumns) ? $sort : 'id';
         $sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'desc';
-        
+
         $users = $query->orderBy($sortColumn, $sortDirection)->paginate($perPage);
-        
+
         return response()->json([
             'data' => $users->items(),
             'pagination' => [
@@ -234,35 +233,35 @@ class UserController extends Controller
         $search = $request->get('search');
         $sort = $request->get('sort', 'id');
         $direction = $request->get('direction', 'desc');
-        
+
         $query = User::query();
-        
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
+
         $allowedSortColumns = ['id', 'name', 'email', 'email_verified_at', 'created_at', 'updated_at'];
         $sortColumn = in_array($sort, $allowedSortColumns) ? $sort : 'id';
         $sortDirection = in_array($direction, ['asc', 'desc']) ? $direction : 'desc';
-        
+
         $users = $query->orderBy($sortColumn, $sortDirection)->get();
-        
-        $filename = 'users_' . now()->format('Y-m-d_H-i-s') . '.csv';
-        
+
+        $filename = 'users_'.now()->format('Y-m-d_H-i-s').'.csv';
+
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ];
-        
-        $callback = function() use ($users) {
+
+        $callback = function () use ($users) {
             $file = fopen('php://output', 'w');
-            
+
             // CSV headers
             fputcsv($file, ['ID', 'Name', 'Email', 'Email Verified', 'Created At', 'Updated At']);
-            
+
             // CSV data
             foreach ($users as $user) {
                 fputcsv($file, [
@@ -274,10 +273,10 @@ class UserController extends Controller
                     $user->updated_at->format('Y-m-d H:i:s'),
                 ]);
             }
-            
+
             fclose($file);
         };
-        
+
         return response()->stream($callback, 200, $headers);
     }
 }

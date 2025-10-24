@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Eye, Edit, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { Link, router } from '@inertiajs/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { Edit, Eye, MoreHorizontal, Trash2 } from 'lucide-react';
 
 export type User = {
     id: number;
@@ -24,17 +24,25 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'id',
         header: 'ID',
-        cell: ({ row }) => <div className="font-medium">{row.getValue('id')}</div>,
+        cell: ({ row }) => (
+            <div className="font-medium">{row.getValue('id')}</div>
+        ),
     },
     {
         accessorKey: 'name',
         header: 'Name',
-        cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
+        cell: ({ row }) => (
+            <div className="font-medium">{row.getValue('name')}</div>
+        ),
     },
     {
         accessorKey: 'email',
         header: 'Email',
-        cell: ({ row }) => <div className="text-blue-600 dark:text-blue-400">{row.getValue('email')}</div>,
+        cell: ({ row }) => (
+            <div className="text-blue-600 dark:text-blue-400">
+                {row.getValue('email')}
+            </div>
+        ),
     },
     {
         accessorKey: 'email_verified_at',
@@ -42,11 +50,13 @@ export const columns: ColumnDef<User>[] = [
         cell: ({ row }) => {
             const isVerified = row.getValue('email_verified_at');
             return (
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    isVerified 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' 
-                        : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                }`}>
+                <span
+                    className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                        isVerified
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                    }`}
+                >
                     {isVerified ? 'Verified' : 'Not Verified'}
                 </span>
             );
@@ -58,19 +68,35 @@ export const columns: ColumnDef<User>[] = [
             return (
                 <Button
                     variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    onClick={() =>
+                        column.toggleSorting(column.getIsSorted() === 'asc')
+                    }
                     className="h-auto p-0 font-medium"
                 >
                     Created At
-                    <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    <svg
+                        className="ml-2 h-4 w-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                        />
                     </svg>
                 </Button>
-            )
+            );
         },
         cell: ({ row }) => {
             const date = new Date(row.getValue('created_at'));
-            return <div className="text-gray-600 dark:text-gray-400">{date.toLocaleDateString()}</div>;
+            return (
+                <div className="text-gray-600 dark:text-gray-400">
+                    {date.toLocaleDateString()}
+                </div>
+            );
         },
     },
     {
@@ -105,7 +131,7 @@ export const columns: ColumnDef<User>[] = [
                                 Edit
                             </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                             onClick={handleDelete}
                             className="text-red-600"
                         >

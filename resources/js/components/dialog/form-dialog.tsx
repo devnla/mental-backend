@@ -20,7 +20,7 @@ import {
     DrawerTrigger,
 } from '@/components/ui/drawer';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 interface FormDialogProps {
     title: string;
@@ -34,7 +34,15 @@ interface FormDialogProps {
     [key: string]: unknown;
 }
 
-export default function FormDialog({ title, description, trigger, formContent, formButton, open, setOpen }: FormDialogProps) {
+export default function FormDialog({
+    title,
+    description,
+    trigger,
+    formContent,
+    formButton,
+    open,
+    setOpen,
+}: FormDialogProps) {
     const isDesktop = useMediaQuery('(min-width: 640px)');
 
     if (isDesktop) {

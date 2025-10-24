@@ -1,8 +1,8 @@
 import CustomerForm from '@/components/form/customer-form';
+import { update } from '@/routes/customers';
 import { Customer } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, ReactNode, useEffect } from 'react';
-import { update } from '@/routes/customers';
 
 interface EditCustomerFormProps {
     customer: Customer;
@@ -19,8 +19,15 @@ type EditCustomerForm = {
     type: string;
 };
 
-export default function EditCustomerForm({ customer, children, open, setOpen }: EditCustomerFormProps) {
-    const { data, setData, patch, processing, errors } = useForm<Required<EditCustomerForm>>({
+export default function EditCustomerForm({
+    customer,
+    children,
+    open,
+    setOpen,
+}: EditCustomerFormProps) {
+    const { data, setData, patch, processing, errors } = useForm<
+        Required<EditCustomerForm>
+    >({
         name: customer.name,
         email: customer.email,
         avatar: null,

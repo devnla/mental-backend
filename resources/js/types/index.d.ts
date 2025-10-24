@@ -43,13 +43,13 @@ export interface User {
 }
 
 export interface Customer {
-    id: number
-    user_id: number
-    customer_number: string
-    name: string
-    email: string
-    avatar?: string
-    type: "individual" | "business"
+    id: number;
+    user_id: number;
+    customer_number: string;
+    name: string;
+    email: string;
+    avatar?: string;
+    type: 'individual' | 'business';
     created_at: string;
     updated_at: string;
     sales_count?: number;

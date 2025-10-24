@@ -7,8 +7,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -31,13 +31,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // Exclude 3xx redirects and specific codes
             if (
-                !config('app.debug') &&
+                ! config('app.debug') &&
                 $status < 400 && $status >= 300 || in_array($status, [401, 419])
             ) {
                 return $response;
             }
 
-            if (!config('app.debug')) {
+            if (! config('app.debug')) {
                 return Inertia::render('error-page', ['status' => $status])
                     ->toResponse($request)
                     ->setStatusCode($status);

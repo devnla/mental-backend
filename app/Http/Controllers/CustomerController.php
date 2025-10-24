@@ -36,7 +36,7 @@ class CustomerController extends Controller
             ->orderBy('customer_number', 'desc')
             ->first();
         $number = $latestCustomer ? (int) explode('-', $latestCustomer->customer_number)[1] : 0;
-        $formattedNumber = 'C-' . str_pad($number + 1, 5, '0', STR_PAD_LEFT);
+        $formattedNumber = 'C-'.str_pad($number + 1, 5, '0', STR_PAD_LEFT);
 
         $customer = $user->customers()->create($request->merge([
             'customer_number' => $formattedNumber,
@@ -48,7 +48,7 @@ class CustomerController extends Controller
         }
 
         return redirect()->route('customers.index')->with('success', 'Customer created successfully.')
-            ->with('description', $formattedNumber . ' has been created.')
+            ->with('description', $formattedNumber.' has been created.')
             ->with('timestamp', now()->timestamp);
     }
 
@@ -61,7 +61,7 @@ class CustomerController extends Controller
             'customers' => Customer::where('user_id', auth()->user()->id)
                 ->latest()
                 ->get(),
-            'show' => $customer->customer_number
+            'show' => $customer->customer_number,
         ]);
     }
 
@@ -94,7 +94,7 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully.')
-            ->with('description', $customer->customer_number . ' has been updated.')
+            ->with('description', $customer->customer_number.' has been updated.')
             ->with('timestamp', now()->timestamp);
     }
 
@@ -110,7 +110,7 @@ class CustomerController extends Controller
         $customer->delete();
 
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.')
-            ->with('description', $customer->customer_number . ' has been deleted.')
+            ->with('description', $customer->customer_number.' has been deleted.')
             ->with('timestamp', now()->timestamp);
     }
 }

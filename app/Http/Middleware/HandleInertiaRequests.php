@@ -55,7 +55,7 @@ class HandleInertiaRequests extends Middleware
             'app' => [
                 'locale' => config('app.locale'),
                 'timezone' => config('app.timezone'),
-            ]
+            ],
         ];
     }
 }

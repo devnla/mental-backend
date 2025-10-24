@@ -8,7 +8,11 @@ interface DataTableFilterProps {
     clearFilter: () => void;
 }
 
-export function DataTableFilter({ globalFilterValue, handleFilterChange, clearFilter }: DataTableFilterProps) {
+export function DataTableFilter({
+    globalFilterValue,
+    handleFilterChange,
+    clearFilter,
+}: DataTableFilterProps) {
     return (
         <div className="relative">
             <Input
@@ -18,7 +22,12 @@ export function DataTableFilter({ globalFilterValue, handleFilterChange, clearFi
                 className="max-w-sm pr-10"
             />
             {globalFilterValue && (
-                <Button variant="ghost" size="sm" className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent" onClick={clearFilter}>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={clearFilter}
+                >
                     <X className="h-4 w-4" />
                 </Button>
             )}
