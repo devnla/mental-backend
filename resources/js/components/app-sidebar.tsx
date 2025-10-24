@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, Users, Users2 } from 'lucide-react';
 
 // Route helper is available globally
 import AppLogo from './app-logo';
@@ -28,6 +28,11 @@ const mainNavItems: NavItem[] = [
         title: 'Admin Users',
         href: '/users',
         icon: Users,
+    },
+    {
+        title: 'Customers',
+        href: '/customers',
+        icon: Users2,
     },
 ];
 

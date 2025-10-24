@@ -41,3 +41,17 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Customer {
+    id: number
+    user_id: number
+    customer_number: string
+    name: string
+    email: string
+    avatar?: string
+    type: "individual" | "business"
+    created_at: string;
+    updated_at: string;
+    sales_count?: number;
+    [key: string]: unknown;
+}

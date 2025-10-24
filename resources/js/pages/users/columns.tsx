@@ -23,86 +23,22 @@ export type User = {
 export const columns: ColumnDef<User>[] = [
     {
         accessorKey: 'id',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => {
-                        const isSorted = column.getIsSorted()
-                        const direction = isSorted === "asc" ? "desc" : isSorted === "desc" ? "" : "asc"
-                        column.toggleSorting(direction === "desc")
-                    }}
-                    className="h-auto p-0 font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                    ID
-                    {column.getIsSorted() === "asc" ? (
-                        <ArrowUp className="ml-2 h-4 w-4" />
-                    ) : column.getIsSorted() === "desc" ? (
-                        <ArrowDown className="ml-2 h-4 w-4" />
-                    ) : (
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
-            )
-        },
+        header: 'ID',
         cell: ({ row }) => <div className="font-medium">{row.getValue('id')}</div>,
     },
     {
         accessorKey: 'name',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="h-auto p-0 font-medium hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                    Name
-                    {column.getIsSorted() === "asc" ? (
-                        <ArrowUp className="ml-2 h-4 w-4" />
-                    ) : column.getIsSorted() === "desc" ? (
-                        <ArrowDown className="ml-2 h-4 w-4" />
-                    ) : (
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                    )}
-                </Button>
-            )
-        },
+        header: 'Name',
         cell: ({ row }) => <div className="font-medium">{row.getValue('name')}</div>,
     },
     {
         accessorKey: 'email',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="h-auto p-0 font-medium"
-                >
-                    Email
-                    <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                    </svg>
-                </Button>
-            )
-        },
+        header: 'Email',
         cell: ({ row }) => <div className="text-blue-600 dark:text-blue-400">{row.getValue('email')}</div>,
     },
     {
         accessorKey: 'email_verified_at',
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    className="h-auto p-0 font-medium"
-                >
-                    Verified
-                    <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                    </svg>
-                </Button>
-            )
-        },
+        header: 'Verified',
         cell: ({ row }) => {
             const isVerified = row.getValue('email_verified_at');
             return (

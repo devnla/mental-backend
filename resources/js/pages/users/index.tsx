@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout'
 import { columns } from './columns'
-import { DataTable } from './data-table'
+import { DataTable } from '@/components/data-table/data-table'
 import { Button } from '@/components/ui/button'
 import { Plus, Download } from 'lucide-react'
 import { usePage, router } from '@inertiajs/react'
@@ -35,7 +35,7 @@ export default function UsersIndex() {
           <div>
             <h1 className="text-2xl font-semibold leading-tight">Users Management</h1>
             <p className="text-sm text-muted-foreground">
-              Manage application users • Total: {pagination.total || 0} users
+              Manage admin users • Total: {pagination.total || 0} users
             </p>
           </div>
 
@@ -83,9 +83,17 @@ export default function UsersIndex() {
         <div className="mt-4">
           <DataTable 
             columns={columns} 
-            data={users.data as User[]} 
-            pagination={pagination}
-            filters={filters}
+            data={users.data as User[]}
+            sortableColumns={[
+              { value: 'id', label: 'ID' },
+              { value: 'name', label: 'Name' },
+              { value: 'email', label: 'Email' },
+              { value: 'email_verified_at', label: 'Verified' },
+              { value: 'created_at', label: 'Created At' },
+            ]}
+            show={filters.search}
+            useFilter={true}
+            usePagination={true}
           />
         </div>
       </div>
