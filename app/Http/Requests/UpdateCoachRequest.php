@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 
-class UpdateCustomerRequest extends FormRequest
+class UpdateCoachRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -22,11 +22,17 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('customers', 'email')->ignore($this->customer),
+                Rule::unique('coaches', 'email')->ignore($this->coach),
             ],
             'avatar' => ['nullable', File::image()->max(1024)], // 1MB max
             'remove_avatar' => ['boolean'],
-            'type' => ['required', 'string', 'in:individual,business'],
+            'bio' => ['nullable', 'string', 'max:2000'],
+            'specialties' => ['nullable', 'array'],
+            'specialties.*' => ['string', 'max:255'],
+            'badges' => ['nullable', 'array'],
+            'badges.*' => ['string', 'max:255'],
+            'language' => ['nullable', 'string', 'max:255'],
         ];
     }
 }
+

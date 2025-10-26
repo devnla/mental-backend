@@ -1,28 +1,34 @@
-import CustomerForm from '@/components/form/customer-form';
-import { store } from '@/routes/customers';
+import CoachForm from '@/components/form/coach-form';
+import { store } from '@/routes/coaches';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, ReactNode, useState } from 'react';
 
-interface AddCustomerFormProps {
+interface AddCoachFormProps {
     children: ReactNode;
 }
 
-type AddCustomerForm = {
+type AddCoachForm = {
     name: string;
     email: string;
     avatar?: File | null;
-    type: 'individual' | 'business';
+    bio?: string;
+    specialties?: string[];
+    badges?: string[];
+    language?: string;
 };
 
-export default function AddCustomerForm({ children }: AddCustomerFormProps) {
+export default function AddCoachForm({ children }: AddCoachFormProps) {
     const [open, setOpen] = useState(false);
     const { data, setData, post, processing, errors } = useForm<
-        Required<AddCustomerForm>
+        Required<AddCoachForm>
     >({
         name: '',
         email: '',
         avatar: null,
-        type: 'individual',
+        bio: '',
+        specialties: [],
+        badges: [],
+        language: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -36,14 +42,17 @@ export default function AddCustomerForm({ children }: AddCustomerFormProps) {
                     name: '',
                     email: '',
                     avatar: null,
-                    type: 'individual',
+                    bio: '',
+                    specialties: [],
+                    badges: [],
+                    language: '',
                 });
             },
         });
     };
 
     return (
-        <CustomerForm
+        <CoachForm
             data={data}
             setData={setData}
             processing={processing}
@@ -55,3 +64,4 @@ export default function AddCustomerForm({ children }: AddCustomerFormProps) {
         />
     );
 }
+

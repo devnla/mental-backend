@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('coaches', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('customer_number');
+            $table->string('coach_number')->unique();
             $table->string('name');
-            $table->string('email');
+            $table->string('email')->unique();
             $table->string('avatar')->nullable();
-            $table->enum('type', ['individual', 'business']);
+            $table->text('bio')->nullable();
+            $table->json('specialties')->nullable();
+            $table->json('badges')->nullable();
+            $table->string('language')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('coaches');
     }
 };
+

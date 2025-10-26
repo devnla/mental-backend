@@ -1,32 +1,27 @@
 import { DeleteDialog } from '@/components/dialog/delete-dialog';
-import { destroy as destroyRoute } from '@/routes/customers';
-import { Customer } from '@/types';
+import { destroy as destroyRoute } from '@/routes/coaches';
+import { Coach } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
-interface DeleteCustomerFormProps {
-    customer: Customer;
+interface DeleteCoachFormProps {
+    coach: Coach;
 }
 
-type EditCustomerForm = {
+type EditCoachForm = {
     name: string;
-    description: string;
-    price: number;
-    quantity: number;
-    image?: File | null;
+    email: string;
 };
 
-export default function DeleteCustomerForm({
-    customer,
-}: DeleteCustomerFormProps) {
+export default function DeleteCoachForm({ coach }: DeleteCoachFormProps) {
     const [open, setOpen] = useState(false);
     const { delete: destroy, processing } =
-        useForm<Required<EditCustomerForm>>();
+        useForm<Required<EditCoachForm>>();
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        destroy(destroyRoute.url({ customer: customer.id }), {
+        destroy(destroyRoute.url({ coach: coach.id }), {
             preserveScroll: true,
             onSuccess: () => setOpen(false),
         });
@@ -34,8 +29,8 @@ export default function DeleteCustomerForm({
 
     return (
         <DeleteDialog
-            title={`Delete "${customer.name}"?`}
-            description={`Are you sure you want to delete ${customer.customer_number} "${customer.name}"? This action cannot be undone. Related sales will not be deleted.`}
+            title={`Delete "${coach.name}"?`}
+            description={`Are you sure you want to delete ${coach.coach_number} "${coach.name}"? This action cannot be undone.`}
             trigger={
                 <Trash className="size-5 cursor-pointer text-destructive transition-transform duration-300 hover:text-destructive/70 active:scale-95" />
             }
@@ -46,3 +41,4 @@ export default function DeleteCustomerForm({
         />
     );
 }
+

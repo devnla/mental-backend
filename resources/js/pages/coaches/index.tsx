@@ -2,23 +2,22 @@ import { DataTable } from '@/components/data-table/data-table';
 import Heading from '@/components/heading';
 import TimestampCell from '@/components/timestamp-cell';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge, badgeVariants } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useInitials } from '@/hooks/use-initials';
 import AppLayout from '@/layouts/app-layout';
-import AddCustomerForm from '@/pages/customers/add-customer-form';
-import DeleteCustomerForm from '@/pages/customers/delete-customer-form';
+import AddCoachForm from '@/pages/coaches/add-coach-form';
+import DeleteCoachForm from '@/pages/coaches/delete-coach-form';
 import { dataExport } from '@/routes';
-import { type BreadcrumbItem, Customer } from '@/types';
+import { type BreadcrumbItem, Coach } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
-import { VariantProps } from 'class-variance-authority';
 import { Download, Plus, SquarePen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import EditCustomerForm from './edit-customer-form';
+import EditCoachForm from './edit-coach-form';
 
-interface CustomersPageProps {
+interface CoachesPageProps {
     app: {
         locale: string;
         currency: string;
@@ -30,7 +29,7 @@ interface CustomersPageProps {
         description?: string;
         timestamp?: string;
     };
-    customers: Customer[];
+    coaches: Coach[];
     show?: string;
 
     [key: string]: unknown;
@@ -38,28 +37,26 @@ interface CustomersPageProps {
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Customers',
-        href: '/customers',
+        title: 'Coaches',
+        href: '/coaches',
     },
 ];
 
-export default function Customers({ customers, show }: CustomersPageProps) {
-    const { app, flash } = usePage<CustomersPageProps>().props;
+export default function Coaches({ coaches, show }: CoachesPageProps) {
+    const { app, flash } = usePage<CoachesPageProps>().props;
     const getInitials = useInitials();
 
-    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-        null,
-    );
+    const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-    const openEditDialog = (customer: Customer) => {
-        setSelectedCustomer(customer);
+    const openEditDialog = (coach: Coach) => {
+        setSelectedCoach(coach);
         setEditDialogOpen(true);
     };
 
     useEffect(() => {
         if (show) {
-            router.visit('/customers', {
+            router.visit('/coaches', {
                 replace: true,
                 preserveScroll: true,
                 preserveState: true,
@@ -81,15 +78,15 @@ export default function Customers({ customers, show }: CustomersPageProps) {
         }
     }, [flash.success, flash.error, flash.description, flash.timestamp]);
 
-    const columns: ColumnDef<Customer>[] = [
+    const columns: ColumnDef<Coach>[] = [
         {
-            id: 'customer_number',
-            accessorKey: 'customer_number',
+            id: 'coach_number',
+            accessorKey: 'coach_number',
             header: () => <div className="text-center">ID</div>,
             cell: ({ row }) => {
                 return (
                     <div className="text-center">
-                        {row.getValue('customer_number')}
+                        {row.getValue('coach_number')}
                     </div>
                 );
             },
@@ -97,26 +94,26 @@ export default function Customers({ customers, show }: CustomersPageProps) {
         {
             id: 'name',
             accessorKey: 'name',
-            header: () => <div className="text-start">Customer Name</div>,
+            header: () => <div className="text-start">Coach Name</div>,
             cell: ({ row }) => {
-                const customer = row.original;
+                const coach = row.original;
                 return (
                     <div className="flex flex-row items-center gap-x-2">
                         <Avatar className="h-8 w-8 overflow-hidden">
                             <AvatarImage
                                 src={
-                                    customer.avatar
-                                        ? `/storage/${customer.avatar}`
+                                    coach.avatar
+                                        ? `/storage/${coach.avatar}`
                                         : undefined
                                 }
-                                alt={customer.name}
+                                alt={coach.name}
                             />
                             <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                {getInitials(customer.name)}
+                                {getInitials(coach.name)}
                             </AvatarFallback>
                         </Avatar>
                         <div className="text-start font-medium">
-                            {customer.name}
+                            {coach.name}
                         </div>
                     </div>
                 );
@@ -135,41 +132,68 @@ export default function Customers({ customers, show }: CustomersPageProps) {
             },
         },
         {
-            id: 'type',
-            accessorKey: 'type',
-            header: () => <div className="text-center">Type</div>,
+            id: 'specialties',
+            accessorKey: 'specialties',
+            header: () => <div className="text-start">Specialties</div>,
             cell: ({ row }) => {
-                const type: 'individual' | 'business' = row.getValue('type');
-                const variantMap: Record<
-                    Customer['type'],
-                    VariantProps<typeof badgeVariants>['variant']
-                > = {
-                    individual: 'secondary',
-                    business: 'default',
-                };
-
+                const specialties: string[] =
+                    row.getValue('specialties') || [];
                 return (
-                    <div className="flex flex-row items-center justify-end gap-x-2">
-                        <Badge
-                            variant={variantMap[type]}
-                            className="text-md w-full font-medium capitalize"
-                        >
-                            {type}
-                        </Badge>
+                    <div className="flex flex-wrap gap-1">
+                        {specialties.length > 0 ? (
+                            specialties.slice(0, 2).map((specialty, idx) => (
+                                <Badge
+                                    key={idx}
+                                    variant="secondary"
+                                    className="text-xs"
+                                >
+                                    {specialty}
+                                </Badge>
+                            ))
+                        ) : (
+                            <span className="text-muted-foreground">-</span>
+                        )}
+                        {specialties.length > 2 && (
+                            <Badge variant="outline" className="text-xs">
+                                +{specialties.length - 2}
+                            </Badge>
+                        )}
                     </div>
                 );
             },
         },
         {
-            id: 'sales_count',
-            accessorKey: 'sales_count',
-            header: () => <div className="text-center">Sales Count</div>,
+            id: 'badges',
+            accessorKey: 'badges',
+            header: () => <div className="text-center">Badges</div>,
             cell: ({ row }) => {
+                const badges: string[] = row.getValue('badges') || [];
                 return (
-                    <div className="text-center">
-                        {row.getValue('sales_count')}
+                    <div className="flex flex-wrap justify-center gap-1">
+                        {badges.length > 0 ? (
+                            badges.map((badge, idx) => (
+                                <Badge
+                                    key={idx}
+                                    variant="default"
+                                    className="text-xs"
+                                >
+                                    {badge}
+                                </Badge>
+                            ))
+                        ) : (
+                            <span className="text-muted-foreground">-</span>
+                        )}
                     </div>
                 );
+            },
+        },
+        {
+            id: 'language',
+            accessorKey: 'language',
+            header: () => <div className="text-center">Language</div>,
+            cell: ({ row }) => {
+                const language: string = row.getValue('language') || '-';
+                return <div className="text-center">{language}</div>;
             },
         },
         {
@@ -192,15 +216,15 @@ export default function Customers({ customers, show }: CustomersPageProps) {
         {
             id: 'actions',
             cell: ({ row }) => {
-                const customer = row.original;
+                const coach = row.original;
 
                 return (
                     <div className="flex flex-row items-center justify-center gap-x-2">
                         <SquarePen
                             className="size-5 cursor-pointer text-primary transition-transform duration-300 hover:text-primary/70 active:scale-95"
-                            onClick={() => openEditDialog(customer)}
+                            onClick={() => openEditDialog(coach)}
                         />
-                        <DeleteCustomerForm customer={customer} />
+                        <DeleteCoachForm coach={coach} />
                     </div>
                 );
             },
@@ -208,37 +232,38 @@ export default function Customers({ customers, show }: CustomersPageProps) {
     ];
 
     const sortableColumns = [
-        { value: 'customer_number', label: 'ID' },
-        { value: 'name', label: 'Customer Name' },
+        { value: 'coach_number', label: 'ID' },
+        { value: 'name', label: 'Coach Name' },
         { value: 'email', label: 'Contact' },
-        { value: 'type', label: 'Type' },
-        { value: 'sales_count', label: 'Sales Count' },
+        { value: 'specialties', label: 'Specialties' },
+        { value: 'badges', label: 'Badges' },
+        { value: 'language', label: 'Language' },
         { value: 'updated_at', label: 'Last Updated' },
         { value: 'actions', label: 'Actions' },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Sales" />
+            <Head title="Coaches" />
 
             <div className="p-4">
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
                     <Heading
-                        title="Customers"
-                        description="Manage your customers and their details."
+                        title="Coaches"
+                        description="Manage your coaches and their details."
                     />
 
                     <div className="flex flex-row items-center gap-x-4 sm:justify-center">
-                        <AddCustomerForm>
+                        <AddCoachForm>
                             <Button className="flex items-center gap-x-2">
                                 <Plus className="size-5" />
                                 Add New
                             </Button>
-                        </AddCustomerForm>
+                        </AddCoachForm>
 
                         <Button variant="ghost" asChild>
                             <a
-                                href={dataExport.url({ type: 'customers' })}
+                                href={dataExport.url({ type: 'coaches' })}
                                 download
                                 target="_blank"
                                 rel="noopener"
@@ -254,15 +279,15 @@ export default function Customers({ customers, show }: CustomersPageProps) {
                 <div>
                     <DataTable
                         columns={columns}
-                        data={customers}
+                        data={coaches}
                         sortableColumns={sortableColumns}
                         show={show}
                     />
                 </div>
 
-                {selectedCustomer && (
-                    <EditCustomerForm
-                        customer={selectedCustomer}
+                {selectedCoach && (
+                    <EditCoachForm
+                        coach={selectedCoach}
                         open={editDialogOpen}
                         setOpen={setEditDialogOpen}
                     />
@@ -271,3 +296,4 @@ export default function Customers({ customers, show }: CustomersPageProps) {
         </AppLayout>
     );
 }
+

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CoachController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -25,8 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('users/bulk-delete', [UserController::class, 'bulkDelete'])->name('users.bulk-delete');
     Route::get('users-export', [UserController::class, 'export'])->name('users.export');
 
-    // Customer management routes
-    Route::resource('customers', CustomerController::class);
+    // Coach management routes
+    Route::resource('coaches', CoachController::class);
 
     Route::get('data-export/{type}', [ExportController::class, '__invoke'])->name('data-export');
 });

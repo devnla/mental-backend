@@ -52,10 +52,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the customers for the user.
+     * Get the coaches for the user.
      */
-    public function customers(): HasMany
+    public function coaches(): HasMany
     {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Coach::class);
     }
 }

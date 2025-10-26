@@ -42,16 +42,18 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Customer {
+export interface Coach {
     id: number;
     user_id: number;
-    customer_number: string;
+    coach_number: string;
     name: string;
     email: string;
     avatar?: string;
-    type: 'individual' | 'business';
+    bio?: string;
+    specialties?: string[];
+    badges?: string[];
+    language?: string;
     created_at: string;
     updated_at: string;
-    sales_count?: number;
     [key: string]: unknown;
 }

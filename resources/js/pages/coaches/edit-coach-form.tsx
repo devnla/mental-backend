@@ -1,53 +1,62 @@
-import CustomerForm from '@/components/form/customer-form';
-import { update } from '@/routes/customers';
-import { Customer } from '@/types';
+import CoachForm from '@/components/form/coach-form';
+import { update } from '@/routes/coaches';
+import { Coach } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler, ReactNode, useEffect } from 'react';
 
-interface EditCustomerFormProps {
-    customer: Customer;
+interface EditCoachFormProps {
+    coach: Coach;
     children?: ReactNode;
     open: boolean;
     setOpen: (open: boolean) => void;
 }
 
-type EditCustomerForm = {
+type EditCoachForm = {
     name: string;
     email: string;
     avatar?: File | null;
     remove_avatar?: boolean;
-    type: string;
+    bio?: string;
+    specialties?: string[];
+    badges?: string[];
+    language?: string;
 };
 
-export default function EditCustomerForm({
-    customer,
+export default function EditCoachForm({
+    coach,
     children,
     open,
     setOpen,
-}: EditCustomerFormProps) {
+}: EditCoachFormProps) {
     const { data, setData, patch, processing, errors } = useForm<
-        Required<EditCustomerForm>
+        Required<EditCoachForm>
     >({
-        name: customer.name,
-        email: customer.email,
+        name: coach.name,
+        email: coach.email,
         avatar: null,
         remove_avatar: false,
-        type: customer.type,
+        bio: coach.bio || '',
+        specialties: coach.specialties || [],
+        badges: coach.badges || [],
+        language: coach.language || '',
     });
 
     useEffect(() => {
         setData({
-            name: customer.name,
-            email: customer.email,
+            name: coach.name,
+            email: coach.email,
             avatar: null,
             remove_avatar: false,
-            type: customer.type,
+            bio: coach.bio || '',
+            specialties: coach.specialties || [],
+            badges: coach.badges || [],
+            language: coach.language || '',
         });
-    }, [customer]);
+    }, [coach]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(update.url({ customer: customer.id }), {
+        patch(update.url({ coach: coach.id }), {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {
@@ -57,14 +66,17 @@ export default function EditCustomerForm({
                     email: '',
                     avatar: null,
                     remove_avatar: false,
-                    type: 'individual',
+                    bio: '',
+                    specialties: [],
+                    badges: [],
+                    language: '',
                 });
             },
         });
     };
 
     return (
-        <CustomerForm
+        <CoachForm
             data={data}
             setData={setData}
             processing={processing}
@@ -76,3 +88,4 @@ export default function EditCustomerForm({
         />
     );
 }
+

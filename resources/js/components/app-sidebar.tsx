@@ -30,8 +30,8 @@ const mainNavItems: NavItem[] = [
         icon: Users,
     },
     {
-        title: 'Customers',
-        href: '/customers',
+        title: 'Coaches',
+        href: '/coaches',
         icon: Users2,
     },
 ];
