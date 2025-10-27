@@ -52,7 +52,7 @@ export interface Coach {
     bio?: string;
     specialties?: string[];
     badges?: string[];
-    language?: string;
+    language?: string[];
     created_at: string;
     updated_at: string;
     [key: string]: unknown;

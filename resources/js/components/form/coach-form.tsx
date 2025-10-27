@@ -4,15 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { MultiSelect } from '@/components/ui/multi-select';
 import { Textarea } from '@/components/ui/textarea';
 import { Ring } from 'ldrs/react';
 import 'ldrs/react/Ring.css';
@@ -27,7 +19,7 @@ interface CoachFormProps {
         bio?: string;
         specialties?: string[];
         badges?: string[];
-        language?: string;
+        language?: string[];
     };
     setData: (key: string, value: unknown) => void;
     processing: boolean;
@@ -62,7 +54,21 @@ const availableSpecialties = [
 
 const availableBadges = ['ICF', 'EMCC', 'BCC', 'AC'];
 
-const availableLanguages = ['English', 'Burmese', 'Thai', 'Chinese'];
+const availableLanguages = [
+    { value: 'English', label: 'English' },
+    { value: 'Burmese (Myanmar)', label: 'Burmese (Myanmar)' },
+    { value: 'Chinese', label: 'Chinese' },
+    { value: 'Thai', label: 'Thai' },
+    { value: 'Korean', label: 'Korean' },
+    { value: 'Japanese', label: 'Japanese' },
+    { value: 'French', label: 'French' },
+    { value: 'Spanish', label: 'Spanish' },
+    { value: 'German', label: 'German' },
+    { value: 'Hindi', label: 'Hindi' },
+    { value: 'Indonesian', label: 'Indonesian' },
+    { value: 'Malay', label: 'Malay' },
+    { value: 'Vietnamese', label: 'Vietnamese' },
+];
 
 export default function CoachForm({
     data,
@@ -99,12 +105,12 @@ export default function CoachForm({
     };
 
     return (
-        <form>
-            <FormDialog
-                title="Add New Coach"
-                description="Fill in the details below to add a new coach to your database."
-                trigger={trigger}
-                formContent={
+        <FormDialog
+            title="Add New Coach"
+            description="Fill in the details below to add a new coach to your database."
+            trigger={trigger}
+            onSubmit={submit}
+            formContent={
                     <div className="flex flex-col gap-y-4 p-4 sm:p-0">
                         <div className="grid gap-2">
                             <Label htmlFor="name">Name</Label>
@@ -164,14 +170,14 @@ export default function CoachForm({
                                 id="remove_avatar"
                                 name="remove_avatar"
                                 checked={data.remove_avatar}
-                                onClick={() => {
+                                onCheckedChange={(checked) => {
                                     setData('avatar', null);
                                     setData(
                                         'remove_avatar',
-                                        !data.remove_avatar,
+                                        checked as boolean,
                                     );
                                 }}
-                                tabIndex={3}
+                                disabled={processing}
                             />
                             <Label htmlFor="remove_avatar">Remove avatar</Label>
                         </div>
@@ -181,7 +187,7 @@ export default function CoachForm({
                             <Textarea
                                 id="bio"
                                 value={data.bio || ''}
-                                onChange={(e) => setData('bio', e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setData('bio', e.target.value)}
                                 disabled={processing}
                                 placeholder="Coach bio"
                                 rows={3}
@@ -253,36 +259,23 @@ export default function CoachForm({
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="language">Language (Optional)</Label>
-                            <Select
-                                value={data.language || ''}
-                                onValueChange={(value) =>
-                                    setData('language', value)
+                            <Label htmlFor="language">Languages *</Label>
+                            <MultiSelect
+                                options={availableLanguages}
+                                selected={data.language || []}
+                                onChange={(values) =>
+                                    setData('language', values)
                                 }
+                                placeholder="Select languages"
+                                searchable={true}
                                 disabled={processing}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select language" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel className="text-muted-foreground">
-                                            Language
-                                        </SelectLabel>
-                                        {availableLanguages.map((lang) => (
-                                            <SelectItem key={lang} value={lang}>
-                                                {lang}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            />
                             <InputError message={errors.language} />
                         </div>
                     </div>
                 }
                 formButton={
-                    <Button disabled={processing} onClick={submit}>
+                    <Button type="submit" disabled={processing}>
                         {processing && (
                             <Ring
                                 size="14"
@@ -297,7 +290,6 @@ export default function CoachForm({
                 open={open}
                 setOpen={setOpen}
             />
-        </form>
     );
 }
 

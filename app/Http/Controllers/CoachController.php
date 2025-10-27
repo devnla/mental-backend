@@ -47,7 +47,7 @@ class CoachController extends Controller
             $coach->save();
         }
 
-        return redirect()->route('coaches.index')->with('success', 'Coach created successfully.')
+        return to_route('coaches.index')->with('success', 'Coach created successfully.')
             ->with('description', $formattedNumber.' has been created.')
             ->with('timestamp', now()->timestamp);
     }
@@ -72,7 +72,7 @@ class CoachController extends Controller
     {
         $validated = $request->validated();
         unset($validated['avatar']);
-        unset($validated['remote_avatar']);
+        unset($validated['remove_avatar']);
         $coach->fill($validated);
 
         if ($request->hasFile('avatar') && $request->file('avatar') !== null) {
@@ -93,7 +93,7 @@ class CoachController extends Controller
 
         $coach->save();
 
-        return redirect()->route('coaches.index')->with('success', 'Coach updated successfully.')
+        return to_route('coaches.index')->with('success', 'Coach updated successfully.')
             ->with('description', $coach->coach_number.' has been updated.')
             ->with('timestamp', now()->timestamp);
     }
@@ -109,7 +109,7 @@ class CoachController extends Controller
 
         $coach->delete();
 
-        return redirect()->route('coaches.index')->with('success', 'Coach deleted successfully.')
+        return to_route('coaches.index')->with('success', 'Coach deleted successfully.')
             ->with('description', $coach->coach_number.' has been deleted.')
             ->with('timestamp', now()->timestamp);
     }

@@ -23,7 +23,8 @@ class StoreCoachRequest extends FormRequest
             'specialties.*' => ['string', 'max:255'],
             'badges' => ['nullable', 'array'],
             'badges.*' => ['string', 'max:255'],
-            'language' => ['nullable', 'string', 'max:255'],
+            'language' => ['required', 'array', 'min:1'],
+            'language.*' => ['string', 'max:255'],
         ];
     }
 }

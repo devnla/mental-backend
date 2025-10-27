@@ -38,6 +38,7 @@ class Coach extends Model
         return [
             'specialties' => 'array',
             'badges' => 'array',
+            'language' => 'array',
         ];
     }
 

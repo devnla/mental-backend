@@ -16,10 +16,10 @@ type EditCoachForm = {
     email: string;
     avatar?: File | null;
     remove_avatar?: boolean;
-    bio?: string;
-    specialties?: string[];
-    badges?: string[];
-    language?: string;
+    bio: string;
+    specialties: string[];
+    badges: string[];
+    language: string[];
 };
 
 export default function EditCoachForm({
@@ -28,9 +28,7 @@ export default function EditCoachForm({
     open,
     setOpen,
 }: EditCoachFormProps) {
-    const { data, setData, patch, processing, errors } = useForm<
-        Required<EditCoachForm>
-    >({
+    const { data, setData, post, processing, errors } = useForm<EditCoachForm>({
         name: coach.name,
         email: coach.email,
         avatar: null,
@@ -38,7 +36,7 @@ export default function EditCoachForm({
         bio: coach.bio || '',
         specialties: coach.specialties || [],
         badges: coach.badges || [],
-        language: coach.language || '',
+        language: coach.language || [],
     });
 
     useEffect(() => {
@@ -47,16 +45,16 @@ export default function EditCoachForm({
             email: coach.email,
             avatar: null,
             remove_avatar: false,
-            bio: coach.bio || '',
-            specialties: coach.specialties || [],
-            badges: coach.badges || [],
-            language: coach.language || '',
+                bio: coach.bio || '',
+                specialties: coach.specialties || [],
+                badges: coach.badges || [],
+                language: coach.language || [],
         });
     }, [coach]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        patch(update.url({ coach: coach.id }), {
+        post(update.url({ coach: coach.id }), {
             preserveScroll: true,
             forceFormData: true,
             onSuccess: () => {
@@ -69,7 +67,7 @@ export default function EditCoachForm({
                     bio: '',
                     specialties: [],
                     badges: [],
-                    language: '',
+                    language: [],
                 });
             },
         });

@@ -20,7 +20,7 @@ import {
     DrawerTrigger,
 } from '@/components/ui/drawer';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { ReactNode } from 'react';
+import { FormEventHandler, ReactNode } from 'react';
 
 interface FormDialogProps {
     title: string;
@@ -30,6 +30,7 @@ interface FormDialogProps {
     formButton: ReactNode;
     open: boolean;
     setOpen: (open: boolean) => void;
+    onSubmit?: FormEventHandler<HTMLFormElement>;
 
     [key: string]: unknown;
 }
@@ -42,6 +43,7 @@ export default function FormDialog({
     formButton,
     open,
     setOpen,
+    onSubmit,
 }: FormDialogProps) {
     const isDesktop = useMediaQuery('(min-width: 640px)');
 
@@ -50,19 +52,21 @@ export default function FormDialog({
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>{trigger}</DialogTrigger>
                 <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{title}</DialogTitle>
-                        <DialogDescription>{description}</DialogDescription>
-                    </DialogHeader>
+                    <form onSubmit={onSubmit}>
+                        <DialogHeader>
+                            <DialogTitle>{title}</DialogTitle>
+                            <DialogDescription>{description}</DialogDescription>
+                        </DialogHeader>
 
-                    {formContent}
+                        {formContent}
 
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        {formButton}
-                    </DialogFooter>
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button type="button" variant="outline">Cancel</Button>
+                            </DialogClose>
+                            {formButton}
+                        </DialogFooter>
+                    </form>
                 </DialogContent>
             </Dialog>
         );
@@ -72,19 +76,21 @@ export default function FormDialog({
         <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>{trigger}</DrawerTrigger>
             <DrawerContent>
-                <DrawerHeader>
-                    <DrawerTitle>{title}</DrawerTitle>
-                    <DrawerDescription>{description}</DrawerDescription>
-                </DrawerHeader>
+                <form onSubmit={onSubmit}>
+                    <DrawerHeader>
+                        <DrawerTitle>{title}</DrawerTitle>
+                        <DrawerDescription>{description}</DrawerDescription>
+                    </DrawerHeader>
 
-                {formContent}
+                    {formContent}
 
-                <DrawerFooter>
-                    {formButton}
-                    <DrawerClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DrawerClose>
-                </DrawerFooter>
+                    <DrawerFooter>
+                        {formButton}
+                        <DrawerClose asChild>
+                            <Button type="button" variant="outline">Cancel</Button>
+                        </DrawerClose>
+                    </DrawerFooter>
+                </form>
             </DrawerContent>
         </Drawer>
     );

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->json('specialties')->nullable();
             $table->json('badges')->nullable();
-            $table->string('language')->nullable();
+            $table->json('language')->nullable();
             $table->timestamps();
         });
     }

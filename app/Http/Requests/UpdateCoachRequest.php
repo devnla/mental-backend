@@ -25,13 +25,14 @@ class UpdateCoachRequest extends FormRequest
                 Rule::unique('coaches', 'email')->ignore($this->coach),
             ],
             'avatar' => ['nullable', File::image()->max(1024)], // 1MB max
-            'remove_avatar' => ['boolean'],
+            'remove_avatar' => ['nullable', 'boolean'],
             'bio' => ['nullable', 'string', 'max:2000'],
             'specialties' => ['nullable', 'array'],
             'specialties.*' => ['string', 'max:255'],
             'badges' => ['nullable', 'array'],
             'badges.*' => ['string', 'max:255'],
-            'language' => ['nullable', 'string', 'max:255'],
+            'language' => ['required', 'array', 'min:1'],
+            'language.*' => ['string', 'max:255'],
         ];
     }
 }

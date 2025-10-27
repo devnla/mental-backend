@@ -11,24 +11,22 @@ type AddCoachForm = {
     name: string;
     email: string;
     avatar?: File | null;
-    bio?: string;
-    specialties?: string[];
-    badges?: string[];
-    language?: string;
+    bio: string;
+    specialties: string[];
+    badges: string[];
+    language: string[];
 };
 
 export default function AddCoachForm({ children }: AddCoachFormProps) {
     const [open, setOpen] = useState(false);
-    const { data, setData, post, processing, errors } = useForm<
-        Required<AddCoachForm>
-    >({
+    const { data, setData, post, processing, errors } = useForm<AddCoachForm>({
         name: '',
         email: '',
         avatar: null,
         bio: '',
         specialties: [],
         badges: [],
-        language: '',
+        language: [],
     });
 
     const submit: FormEventHandler = (e) => {
@@ -45,7 +43,7 @@ export default function AddCoachForm({ children }: AddCoachFormProps) {
                     bio: '',
                     specialties: [],
                     badges: [],
-                    language: '',
+                    language: [],
                 });
             },
         });
