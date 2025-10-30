@@ -47,4 +47,3 @@ class Coach extends Model
         return $this->belongsTo(User::class);
     }
 }
-

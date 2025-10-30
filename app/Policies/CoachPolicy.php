@@ -63,4 +63,3 @@ class CoachPolicy
         return false;
     }
 }
-

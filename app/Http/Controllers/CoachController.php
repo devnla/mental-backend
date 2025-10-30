@@ -114,4 +114,3 @@ class CoachController extends Controller
             ->with('timestamp', now()->timestamp);
     }
 }
-

@@ -25,7 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'view_analytics',
             'manage_settings',
             'export_data',
-            
+
             // Coach permissions
             'view_profile',
             'edit_profile',
@@ -33,14 +33,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'view_clients',
             'message_clients',
             'view_reports',
-            
+
             // User permissions
             'book_session',
             'view_sessions',
             'cancel_session',
             'rate_coach',
             'view_history',
-            
+
             // Shared permissions
             'access_api',
             'access_web',
@@ -54,13 +54,13 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Admin Role - All permissions
         $admin = Role::firstOrCreate(['name' => 'admin']);
-        if (!$admin->hasAllPermissions(Permission::all())) {
+        if (! $admin->hasAllPermissions(Permission::all())) {
             $admin->givePermissionTo(Permission::all());
         }
 
         // Coach Roles
         $coach = Role::firstOrCreate(['name' => 'coach']);
-        if (!$coach->hasAllPermissions([
+        if (! $coach->hasAllPermissions([
             'access_api',
             'view_profile',
             'edit_profile',
@@ -82,7 +82,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Coach Pro (paid plan)
         $coachPro = Role::firstOrCreate(['name' => 'coach-pro']);
-        if (!$coachPro->hasAllPermissions([
+        if (! $coachPro->hasAllPermissions([
             'access_api',
             'view_profile',
             'edit_profile',
@@ -102,7 +102,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Coach Enterprise (premium plan)
         $coachEnterprise = Role::firstOrCreate(['name' => 'coach-enterprise']);
-        if (!$coachEnterprise->hasAllPermissions([
+        if (! $coachEnterprise->hasAllPermissions([
             'access_api',
             'view_profile',
             'edit_profile',
@@ -122,7 +122,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // User Roles
         $user = Role::firstOrCreate(['name' => 'user']);
-        if (!$user->hasAllPermissions([
+        if (! $user->hasAllPermissions([
             'access_api',
             'book_session',
             'view_sessions',
@@ -142,7 +142,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // User Premium (paid plan)
         $userPremium = Role::firstOrCreate(['name' => 'user-premium']);
-        if (!$userPremium->hasAllPermissions([
+        if (! $userPremium->hasAllPermissions([
             'access_api',
             'book_session',
             'view_sessions',
