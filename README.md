@@ -1,4 +1,4 @@
-# Mental Backend
+# Backend
 
 A Laravel + React application built with Inertia.js, providing a modern full-stack experience with server-side rendering support.
 
@@ -6,8 +6,8 @@ A Laravel + React application built with Inertia.js, providing a modern full-sta
 
 - **Backend:** Laravel 12 (PHP 8.2+)
 - **Frontend:** React 19 with TypeScript
-- **UI Framework:** Tailwind CSS 4 + shadcn/ui components
-- **Database:** SQLite (default) / MySQL / PostgreSQL
+- **UI Framework:** Tailwind CSS 4 + radix-ui + shadcn/ui components
+- **Database:** MySQL
 - **Authentication:** Laravel Fortify + Sanctum
 - **Testing:** Pest PHP
 - **Code Quality:** Laravel Pint (PHP) + ESLint (TypeScript/React)
@@ -27,8 +27,8 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd mental-backend
+git clone <repository-url> backend
+cd backend
 ```
 
 ### 2. Install Dependencies
