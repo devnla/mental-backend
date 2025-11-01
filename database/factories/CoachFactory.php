@@ -34,7 +34,7 @@ class CoachFactory extends Factory
                 'Business Coaching',
                 'Health & Wellness',
                 'Relationship Coaching',
-                'Performance Coaching'
+                'Performance Coaching',
             ], $this->faker->numberBetween(1, 4)),
             'badges' => $this->faker->randomElements(['ICF', 'EMCC', 'BCC', 'AC'], $this->faker->numberBetween(0, 2)),
             'language' => $this->faker->randomElement(['English', 'Burmese', 'Thai', 'Chinese']),
@@ -43,4 +43,3 @@ class CoachFactory extends Factory
         ];
     }
 }
-

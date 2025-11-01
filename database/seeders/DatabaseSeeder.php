@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Assign admin role
-        if (!$admin->hasRole('admin')) {
+        if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
 
@@ -43,15 +43,15 @@ class DatabaseSeeder extends Seeder
         );
 
         // Assign coach role
-        if (!$coach->hasRole('coach')) {
+        if (! $coach->hasRole('coach')) {
             $coach->assignRole('coach');
         }
 
         // Create coach profile for coach user
-        if (!$coach->coaches()->exists()) {
+        if (! $coach->coaches()->exists()) {
             Coach::create([
                 'user_id' => $coach->id,
-                'coach_number' => 'COACH-' . str_pad($coach->id, 4, '0', STR_PAD_LEFT),
+                'coach_number' => 'COACH-'.str_pad($coach->id, 4, '0', STR_PAD_LEFT),
                 'name' => 'Coach User',
                 'email' => 'coach@example.com',
                 'bio' => 'Experienced fitness coach',
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // Assign user role
-        if (!$user->hasRole('user')) {
+        if (! $user->hasRole('user')) {
             $user->assignRole('user');
         }
 

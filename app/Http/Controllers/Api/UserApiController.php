@@ -38,7 +38,7 @@ class UserApiController extends Controller
 
         $request->validate([
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'sometimes|string|email|max:255|unique:users,email,'.$user->id,
         ]);
 
         $user->update($request->only(['name', 'email']));

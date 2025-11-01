@@ -28,4 +28,3 @@ class StoreCoachRequest extends FormRequest
         ];
     }
 }
-
