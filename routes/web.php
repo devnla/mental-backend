@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CoachController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -13,6 +15,21 @@ Route::get('/', function () {
         'canRegister' => Features::enabled(Features::registration()),
     ]);
 })->name('home');
+
+// Invite link: validate token and redirect to registration with invite info
+Route::get('/invite/{token}', function ($token, Request $request) {
+    $inv = \App\Models\Invitation::where('token', $token)->first();
+
+    if (! $inv || $inv->isExpired() || $inv->isUsed()) {
+        abort(404, 'Invitation invalid or expired.');
+    }
+
+    // store into session so Fortify register view can pick it up
+    $request->session()->put('invite_email', $inv->email);
+    $request->session()->put('invite_token', $token);
+
+    return redirect()->route('register', ['invite_token' => $token, 'invite_email' => $inv->email]);
+})->name('invite.show');
 
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('dashboard', function () {
@@ -33,6 +50,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::delete('coaches/{coach}', [CoachController::class, 'destroy'])->name('coaches.destroy');
 
     Route::get('data-export/{type}', [ExportController::class, '__invoke'])->name('data-export');
+
+    // Admin can create invites
+    Route::post('invites', [InviteController::class, 'store'])->name('invites.store');
+    Route::get('invites/create', [InviteController::class, 'create'])->name('invites.create');
 });
 
 require __DIR__.'/settings.php';

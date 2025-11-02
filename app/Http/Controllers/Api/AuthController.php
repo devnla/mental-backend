@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Invitation;
 
 class AuthController extends Controller
 {
@@ -91,7 +92,22 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'device_name' => 'required|string',
+            'invite_token' => 'required|string|exists:invitations,token',
         ]);
+
+        $inv = Invitation::where('token', $request->invite_token)->first();
+
+        if (! $inv || $inv->email !== $request->email) {
+            throw ValidationException::withMessages([
+                'invite_token' => ['Invalid or missing invitation token.'],
+            ]);
+        }
+
+        if ($inv->isExpired() || $inv->isUsed()) {
+            throw ValidationException::withMessages([
+                'invite_token' => ['This invitation is expired or already used.'],
+            ]);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -101,6 +117,8 @@ class AuthController extends Controller
 
         // Assign default user role
         $user->assignRole('user');
+
+        $inv->markUsedBy($user->id);
 
         $token = $user->createToken($request->device_name)->plainTextToken;
 

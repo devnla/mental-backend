@@ -29,5 +29,9 @@ Route::prefix('v1')->group(function () {
             Route::put('/profile', [UserApiController::class, 'update']);
             Route::put('/password', [UserApiController::class, 'updatePassword']);
         });
+
+        // Admin-only: create invites via API (useful for Postman with Sanctum token)
+        Route::post('/invites', [\App\Http\Controllers\InviteController::class, 'store'])
+            ->middleware('role:admin');
     });
 });

@@ -47,7 +47,7 @@ export default function UsersIndex() {
                             Export CSV
                         </Button>
 
-                        <Link href="/users/create">
+                        <Link href="/invites/create_invite">
                             <Button>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Add User

@@ -1,6 +1,7 @@
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 import { Form, Head } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -11,6 +12,10 @@ import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
 
 export default function Register() {
+    const page = usePage();
+    const props = page.props as { invite_email?: string; invite_token?: string };
+    const inviteEmail = props.invite_email ?? '';
+    const inviteToken = props.invite_token ?? '';
     return (
         <AuthLayout
             title="Create an account"
@@ -54,8 +59,12 @@ export default function Register() {
                                     autoComplete="email"
                                     name="email"
                                     placeholder="email@example.com"
+                                    defaultValue={inviteEmail}
+                                    readOnly={Boolean(inviteEmail)}
                                 />
                                 <InputError message={errors.email} />
+                                {/* include invite token so backend can validate */}
+                                <input type="hidden" name="invite_token" value={inviteToken} />
                             </div>
 
                             <div className="grid gap-2">

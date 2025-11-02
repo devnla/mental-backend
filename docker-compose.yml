@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # web UI
+      - "1025:1025"   # SMTP
+    volumes:
+      - ./mailpit-data:/data
+    environment:
+      # useful environment vars (optional)
+      MP_DATA_FILE: /data/mailpit.db
+      MP_MAX_MESSAGES: 5000
+      # MP_UI_AUTH_FILE: /data/authfile   # enable simple UI auth if you want
