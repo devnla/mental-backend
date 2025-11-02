@@ -1,54 +1,64 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
+use App\Enums\ApiErrorCode;
+use App\Helpers\DeviceHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\LoginRequest;
+use App\Http\Requests\API\RegisterRequest;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Login user and return token
      */
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-            'device_name' => 'required',
-        ]);
+        $validated = $request->validated();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $validated['email'])->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
+            return $this->errorResponse(
+                message: ApiErrorCode::INVALID_CREDENTIALS->message(),
+                errorCode: ApiErrorCode::INVALID_CREDENTIALS
+            );
         }
 
         // Check if user is allowed to access API (coach or user only)
         if (! $user->canAccessApi()) {
-            return response()->json([
-                'message' => 'Only coaches and users can access the API.',
-            ], 403);
+            return $this->errorResponse(
+                message: ApiErrorCode::ADMIN_API_ACCESS_DENIED->message(),
+                errorCode: ApiErrorCode::ADMIN_API_ACCESS_DENIED
+            );
         }
 
-        $token = $user->createToken($request->device_name)->plainTextToken;
+        // Get device name from User-Agent
+        $deviceName = DeviceHelper::getDeviceName($request);
+        $token = $user->createToken($deviceName)->plainTextToken;
 
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name'),
+        return $this->successResponse(
+            data: [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name'),
+                ],
+                'token' => $token,
             ],
-            'token' => $token,
-        ]);
+            message: 'Login successful'
+        );
     }
 
     /**
@@ -58,15 +68,18 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        return response()->json([
-            'user' => [
+        return $this->successResponse(
+            data: [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
                 'roles' => $user->getRoleNames(),
                 'permissions' => $user->getAllPermissions()->pluck('name'),
+                'created_at' => $user->created_at,
             ],
-        ]);
+            message: 'User retrieved successfully'
+        );
     }
 
     /**
@@ -76,43 +89,43 @@ class AuthController extends Controller
     {
         $request->user()->tokens()->delete();
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ]);
+        return $this->successResponse(
+            message: 'Logged out successfully'
+        );
     }
 
     /**
      * Register a new user
      */
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'device_name' => 'required|string',
-        ]);
+        $validated = $request->validated();
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
-        // Assign default user role
         $user->assignRole('user');
 
-        $token = $user->createToken($request->device_name)->plainTextToken;
+        // Get device name from User-Agent
+        $deviceName = DeviceHelper::getDeviceName($request);
+        $token = $user->createToken($deviceName)->plainTextToken;
 
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name'),
+        return $this->createdResponse(
+            data: [
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'roles' => $user->getRoleNames(),
+                    'permissions' => $user->getAllPermissions()->pluck('name'),
+                ],
+                'token' => $token,
             ],
-            'token' => $token,
-        ], 201);
+            message: 'Registration successful'
+        );
     }
 }

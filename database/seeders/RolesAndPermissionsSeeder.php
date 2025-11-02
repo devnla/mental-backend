@@ -95,7 +95,7 @@ class RolesAndPermissionsSeeder extends Seeder
         if (! $user->hasAllPermissions($userPermissions)) {
             $user->syncPermissions($userPermissions);
         }
-        
+
         $this->command->info('Roles and permissions created successfully!');
     }
 }

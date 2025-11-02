@@ -33,4 +33,3 @@ class EnsureAdminWebAccess
         return $next($request);
     }
 }
-

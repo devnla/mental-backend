@@ -32,4 +32,3 @@ class EnsureApiAccess
         return $next($request);
     }
 }
-
