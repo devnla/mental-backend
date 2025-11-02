@@ -20,7 +20,6 @@ class CoachFactory extends Factory
         $createdAt = $this->faker->dateTimeBetween('-1 year');
 
         return [
-            'user_id' => 1,
             'coach_number' => 'CH-'.str_pad($coachNumber++, 5, '0', STR_PAD_LEFT),
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
@@ -35,9 +34,11 @@ class CoachFactory extends Factory
                 'Health & Wellness',
                 'Relationship Coaching',
                 'Performance Coaching',
+                'Mental Health',
+                'Stress Management',
             ], $this->faker->numberBetween(1, 4)),
-            'badges' => $this->faker->randomElements(['ICF', 'EMCC', 'BCC', 'AC'], $this->faker->numberBetween(0, 2)),
-            'language' => $this->faker->randomElement(['English', 'Burmese', 'Thai', 'Chinese']),
+            'badges' => $this->faker->randomElements(['ICF', 'EMCC', 'BCC', 'AC', 'Certified', 'Professional'], $this->faker->numberBetween(0, 3)),
+            'language' => $this->faker->randomElements(['English', 'Burmese', 'Thai', 'Chinese', 'Spanish'], $this->faker->numberBetween(1, 2)),
             'created_at' => $createdAt,
             'updated_at' => $this->faker->dateTimeBetween($createdAt),
         ];

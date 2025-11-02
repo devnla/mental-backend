@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@test.com'],
             [
-                'name' => 'Admin User',
+                'name' => 'Super Admin',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
             ]
@@ -51,13 +51,13 @@ class DatabaseSeeder extends Seeder
         if (! $coach->coaches()->exists()) {
             Coach::create([
                 'user_id' => $coach->id,
-                'coach_number' => 'COACH-'.str_pad($coach->id, 4, '0', STR_PAD_LEFT),
+                'coach_number' => 'COACH-0001',
                 'name' => 'Coach User',
                 'email' => 'coach@example.com',
-                'bio' => 'Experienced fitness coach',
-                'specialties' => ['Fitness', 'Nutrition'],
-                'badges' => ['Certified'],
-                'language' => 'en',
+                'bio' => 'Experienced mental health coach with years of experience',
+                'specialties' => ['Mental Health', 'Life Coaching', 'Stress Management'],
+                'badges' => ['Certified', 'Professional'],
+                'language' => ['English'],
             ]);
         }
 

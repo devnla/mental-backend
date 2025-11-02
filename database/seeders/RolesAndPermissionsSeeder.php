@@ -52,111 +52,50 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create roles and assign permissions
 
-        // Admin Role - All permissions
+        // Admin Role - Only web dashboard access
         $admin = Role::firstOrCreate(['name' => 'admin']);
-        if (! $admin->hasAllPermissions(Permission::all())) {
-            $admin->givePermissionTo(Permission::all());
-        }
-
-        // Coach Roles
-        $coach = Role::firstOrCreate(['name' => 'coach']);
-        if (! $coach->hasAllPermissions([
-            'access_api',
-            'view_profile',
-            'edit_profile',
-            'manage_schedule',
-            'view_clients',
-            'message_clients',
-            'view_reports',
-        ])) {
-            $coach->givePermissionTo([
-                'access_api',
-                'view_profile',
-                'edit_profile',
-                'manage_schedule',
-                'view_clients',
-                'message_clients',
-                'view_reports',
-            ]);
-        }
-
-        // Coach Pro (paid plan)
-        $coachPro = Role::firstOrCreate(['name' => 'coach-pro']);
-        if (! $coachPro->hasAllPermissions([
-            'access_api',
-            'view_profile',
-            'edit_profile',
-            'manage_schedule',
-            'view_clients',
-            'message_clients',
-            'view_reports',
+        $adminPermissions = [
+            'access_web',
+            'manage_users',
+            'manage_coaches',
+            'manage_subscriptions',
             'view_analytics',
-            'export_data',
-        ])) {
-            $coachPro->givePermissionTo($coach->permissions);
-            $coachPro->givePermissionTo([
-                'view_analytics',
-                'export_data',
-            ]);
-        }
-
-        // Coach Enterprise (premium plan)
-        $coachEnterprise = Role::firstOrCreate(['name' => 'coach-enterprise']);
-        if (! $coachEnterprise->hasAllPermissions([
-            'access_api',
-            'view_profile',
-            'edit_profile',
-            'manage_schedule',
-            'view_clients',
-            'message_clients',
-            'view_reports',
-            'view_analytics',
-            'export_data',
             'manage_settings',
-        ])) {
-            $coachEnterprise->givePermissionTo($coachPro->permissions);
-            $coachEnterprise->givePermissionTo([
-                'manage_settings',
-            ]);
+            'export_data',
+        ];
+        if (! $admin->hasAllPermissions($adminPermissions)) {
+            $admin->syncPermissions($adminPermissions);
         }
 
-        // User Roles
-        $user = Role::firstOrCreate(['name' => 'user']);
-        if (! $user->hasAllPermissions([
+        // Coach Role - API access with coach permissions
+        $coach = Role::firstOrCreate(['name' => 'coach']);
+        $coachPermissions = [
             'access_api',
-            'book_session',
-            'view_sessions',
-            'cancel_session',
-            'rate_coach',
-            'view_history',
-        ])) {
-            $user->givePermissionTo([
-                'access_api',
-                'book_session',
-                'view_sessions',
-                'cancel_session',
-                'rate_coach',
-                'view_history',
-            ]);
-        }
-
-        // User Premium (paid plan)
-        $userPremium = Role::firstOrCreate(['name' => 'user-premium']);
-        if (! $userPremium->hasAllPermissions([
-            'access_api',
-            'book_session',
-            'view_sessions',
-            'cancel_session',
-            'rate_coach',
-            'view_history',
+            'view_profile',
+            'edit_profile',
+            'manage_schedule',
+            'view_clients',
+            'message_clients',
             'view_reports',
-        ])) {
-            $userPremium->givePermissionTo($user->permissions);
-            $userPremium->givePermissionTo([
-                'view_reports', // Premium users can view detailed reports
-            ]);
+        ];
+        if (! $coach->hasAllPermissions($coachPermissions)) {
+            $coach->syncPermissions($coachPermissions);
         }
 
+        // User Role - API access with user permissions
+        $user = Role::firstOrCreate(['name' => 'user']);
+        $userPermissions = [
+            'access_api',
+            'book_session',
+            'view_sessions',
+            'cancel_session',
+            'rate_coach',
+            'view_history',
+        ];
+        if (! $user->hasAllPermissions($userPermissions)) {
+            $user->syncPermissions($userPermissions);
+        }
+        
         $this->command->info('Roles and permissions created successfully!');
     }
 }
