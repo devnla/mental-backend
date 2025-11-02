@@ -28,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureRole::class,
+            'admin.web' => \App\Http\Middleware\EnsureAdminWebAccess::class,
+            'api.access' => \App\Http\Middleware\EnsureApiAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ApiErrorCode;
 use App\Http\Controllers\Controller;
-use App\Models\Coach;
+use App\Http\Requests\API\UpdateCoachProfileRequest;
+use App\Models\CoachProfile;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CoachApiController extends Controller
 {
+    use ApiResponse;
+
     /**
-     * Display a listing of the coaches.
+     * Display a listing of coach profiles.
      */
     public function index(Request $request): JsonResponse
     {
@@ -18,84 +23,109 @@ class CoachApiController extends Controller
 
         // Check permission
         if (! $user->can('view_clients')) {
-            abort(403, 'You do not have permission to view coaches.');
+            return $this->unauthorizedResponse(
+                message: 'You do not have permission to view coaches.',
+                errorCode: ApiErrorCode::INSUFFICIENT_PERMISSIONS
+            );
         }
 
         // Only coaches can access their own data
-        if ($user->hasAnyRole(['coach', 'coach-pro', 'coach-enterprise'])) {
-            $coaches = Coach::where('user_id', $user->id)->get();
+        if ($user->isCoach()) {
+            $coaches = CoachProfile::where('user_id', $user->id)
+                ->with('user:id,name,email')
+                ->get();
         } else {
-            $coaches = Coach::all();
+            // Users can see all verified coaches
+            $coaches = CoachProfile::where('is_verified', true)
+                ->where('is_available', true)
+                ->with('user:id,name,email')
+                ->get();
         }
 
-        return response()->json([
-            'coaches' => $coaches,
-        ]);
+        return $this->successResponse(
+            data: $coaches,
+            message: 'Coach profiles retrieved successfully'
+        );
     }
 
     /**
-     * Display the specified coach.
+     * Display the specified coach profile.
      */
     public function show(Request $request, string $id): JsonResponse
     {
         $user = $request->user();
-        $coach = Coach::findOrFail($id);
+        $coachProfile = CoachProfile::with('user:id,name,email')->find($id);
 
-        // Coaches can only access their own data
-        if ($user->isCoach() && $coach->user_id !== $user->id) {
-            return response()->json([
-                'message' => 'Unauthorized access.',
-            ], 403);
+        if (! $coachProfile) {
+            return $this->notFoundResponse(
+                message: 'Coach profile not found',
+                errorCode: ApiErrorCode::COACH_NOT_FOUND
+            );
         }
 
-        return response()->json([
-            'coach' => $coach,
-        ]);
+        // Coaches can only access their own data
+        if ($user->isCoach() && $coachProfile->user_id !== $user->id) {
+            return $this->unauthorizedResponse(
+                message: 'You can only view your own profile.',
+                errorCode: ApiErrorCode::ACCESS_DENIED
+            );
+        }
+
+        return $this->successResponse(
+            data: $coachProfile,
+            message: 'Coach profile retrieved successfully'
+        );
     }
 
     /**
-     * Update the coach profile.
+     * Update the authenticated coach's profile.
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateCoachProfileRequest $request, string $id): JsonResponse
     {
         $user = $request->user();
-        $coach = Coach::findOrFail($id);
+        $coachProfile = CoachProfile::find($id);
+
+        if (! $coachProfile) {
+            return $this->notFoundResponse(
+                message: 'Coach profile not found',
+                errorCode: ApiErrorCode::COACH_NOT_FOUND
+            );
+        }
 
         // Check permission
         if (! $user->can('edit_profile')) {
-            return response()->json([
-                'message' => 'You do not have permission to edit profiles.',
-            ], 403);
+            return $this->unauthorizedResponse(
+                message: 'You do not have permission to edit profiles.',
+                errorCode: ApiErrorCode::INSUFFICIENT_PERMISSIONS
+            );
         }
 
         // Only the coach owner can update
-        if ($coach->user_id !== $user->id) {
-            return response()->json([
-                'message' => 'Unauthorized access.',
-            ], 403);
+        if ($coachProfile->user_id !== $user->id) {
+            return $this->unauthorizedResponse(
+                message: 'You can only update your own profile.',
+                errorCode: ApiErrorCode::ACCESS_DENIED
+            );
         }
 
-        $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'bio' => 'nullable|string',
-            'avatar' => 'nullable|string',
-            'specialties' => 'nullable|array',
-            'badges' => 'nullable|array',
-            'language' => 'nullable|string|max:255',
-        ]);
-
-        $coach->update($request->only([
-            'name',
+        $coachProfile->update($request->only([
+            'phone',
             'bio',
             'avatar',
             'specialties',
+            'certifications',
             'badges',
-            'language',
+            'languages',
+            'years_of_experience',
+            'hourly_rate',
+            'timezone',
+            'is_available',
+            'availability_schedule',
         ]));
 
-        return response()->json([
-            'message' => 'Coach updated successfully',
-            'coach' => $coach,
-        ]);
+        return $this->updatedResponse(
+            data: $coachProfile->fresh()->load('user:id,name,email'),
+            message: 'Coach profile updated successfully'
+        );
     }
 }
