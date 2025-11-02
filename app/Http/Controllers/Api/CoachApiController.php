@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\ApiErrorCode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UpdateCoachProfileRequest;
-use App\Models\Coach;
+use App\Models\CoachProfile;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,9 +31,9 @@ class CoachApiController extends Controller
 
         // Only coaches can access their own data
         if ($user->isCoach()) {
-            $coaches = Coach::where('user_id', $user->id)->get();
+            $coaches = CoachProfile::where('user_id', $user->id)->with('user:id,name,email')->get();
         } else {
-            $coaches = Coach::all();
+            $coaches = CoachProfile::with('user:id,name,email')->get();
         }
 
         return $this->successResponse(
@@ -48,17 +48,17 @@ class CoachApiController extends Controller
     public function show(Request $request, string $id): JsonResponse
     {
         $user = $request->user();
-        $coach = Coach::find($id);
+        $coachProfile = CoachProfile::with('user:id,name,email')->find($id);
 
-        if (! $coach) {
+        if (! $coachProfile) {
             return $this->notFoundResponse(
-                message: 'Coach not found',
+                message: 'Coach profile not found',
                 errorCode: ApiErrorCode::COACH_NOT_FOUND
             );
         }
 
         // Coaches can only access their own data
-        if ($user->isCoach() && $coach->user_id !== $user->id) {
+        if ($user->isCoach() && $coachProfile->user_id !== $user->id) {
             return $this->unauthorizedResponse(
                 message: 'You can only view your own profile.',
                 errorCode: ApiErrorCode::ACCESS_DENIED
@@ -66,8 +66,8 @@ class CoachApiController extends Controller
         }
 
         return $this->successResponse(
-            data: $coach,
-            message: 'Coach retrieved successfully'
+            data: $coachProfile,
+            message: 'Coach profile retrieved successfully'
         );
     }
 
@@ -77,11 +77,11 @@ class CoachApiController extends Controller
     public function update(UpdateCoachProfileRequest $request, string $id): JsonResponse
     {
         $user = $request->user();
-        $coach = Coach::find($id);
+        $coachProfile = CoachProfile::find($id);
 
-        if (! $coach) {
+        if (! $coachProfile) {
             return $this->notFoundResponse(
-                message: 'Coach not found',
+                message: 'Coach profile not found',
                 errorCode: ApiErrorCode::COACH_NOT_FOUND
             );
         }
@@ -95,25 +95,30 @@ class CoachApiController extends Controller
         }
 
         // Only the coach owner can update
-        if ($coach->user_id !== $user->id) {
+        if ($coachProfile->user_id !== $user->id) {
             return $this->unauthorizedResponse(
                 message: 'You can only update your own profile.',
                 errorCode: ApiErrorCode::ACCESS_DENIED
             );
         }
 
-        $coach->update($request->only([
-            'name',
-            'email',
+        $coachProfile->update($request->only([
+            'phone',
             'bio',
             'avatar',
             'specialties',
+            'certifications',
             'badges',
-            'language',
+            'languages',
+            'years_of_experience',
+            'hourly_rate',
+            'timezone',
+            'is_available',
+            'availability_schedule',
         ]));
 
         return $this->updatedResponse(
-            data: $coach->fresh(),
+            data: $coachProfile->fresh()->load('user:id,name,email'),
             message: 'Coach profile updated successfully'
         );
     }

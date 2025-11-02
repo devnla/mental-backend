@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Coach extends Model
+class UserProfile extends Model
 {
-    /** @use HasFactory<\Database\Factories\CoachFactory> */
     use HasFactory;
 
     /**
@@ -18,14 +17,17 @@ class Coach extends Model
      */
     protected $fillable = [
         'user_id',
-        'coach_number',
-        'name',
-        'email',
+        'phone',
+        'date_of_birth',
+        'gender',
         'avatar',
         'bio',
-        'specialties',
-        'badges',
-        'language',
+        'address',
+        'city',
+        'state',
+        'country',
+        'postal_code',
+        'preferences',
     ];
 
     /**
@@ -36,12 +38,14 @@ class Coach extends Model
     protected function casts(): array
     {
         return [
-            'specialties' => 'array',
-            'badges' => 'array',
-            'language' => 'array',
+            'date_of_birth' => 'date',
+            'preferences' => 'array',
         ];
     }
 
+    /**
+     * Get the user that owns the profile.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

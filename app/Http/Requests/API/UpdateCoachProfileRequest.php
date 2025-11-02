@@ -27,16 +27,22 @@ class UpdateCoachProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'email' => ['sometimes', 'required', 'string', 'email', 'max:255'],
-            'bio' => ['nullable', 'string', 'max:1000'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'bio' => ['nullable', 'string', 'max:2000'],
             'avatar' => ['nullable', 'string', 'max:500'],
             'specialties' => ['nullable', 'array'],
             'specialties.*' => ['string', 'max:100'],
+            'certifications' => ['nullable', 'array'],
+            'certifications.*' => ['string', 'max:150'],
             'badges' => ['nullable', 'array'],
             'badges.*' => ['string', 'max:100'],
-            'language' => ['nullable', 'array'],
-            'language.*' => ['string', 'max:50'],
+            'languages' => ['nullable', 'array'],
+            'languages.*' => ['string', 'max:50'],
+            'years_of_experience' => ['nullable', 'integer', 'min:0', 'max:50'],
+            'hourly_rate' => ['nullable', 'numeric', 'min:0', 'max:9999.99'],
+            'timezone' => ['nullable', 'string', 'max:100'],
+            'is_available' => ['nullable', 'boolean'],
+            'availability_schedule' => ['nullable', 'array'],
         ];
     }
 
@@ -46,13 +52,17 @@ class UpdateCoachProfileRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Coach name cannot be empty.',
-            'email.required' => 'Email address cannot be empty.',
-            'email.email' => 'Please provide a valid email address.',
-            'bio.max' => 'Bio cannot exceed 1000 characters.',
+            'phone.max' => 'Phone number cannot exceed 50 characters.',
+            'bio.max' => 'Bio cannot exceed 2000 characters.',
             'specialties.array' => 'Specialties must be an array.',
+            'certifications.array' => 'Certifications must be an array.',
             'badges.array' => 'Badges must be an array.',
-            'language.array' => 'Languages must be an array.',
+            'languages.array' => 'Languages must be an array.',
+            'years_of_experience.integer' => 'Years of experience must be a number.',
+            'years_of_experience.min' => 'Years of experience cannot be negative.',
+            'hourly_rate.numeric' => 'Hourly rate must be a number.',
+            'hourly_rate.min' => 'Hourly rate cannot be negative.',
+            'availability_schedule.array' => 'Availability schedule must be an array.',
         ];
     }
 
