@@ -10,12 +10,12 @@ use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class CoachApiController extends Controller
+class CoachController extends Controller
 {
     use ApiResponse;
 
     /**
-     * Display a listing of coach profiles.
+     * Display a listing of the coaches.
      */
     public function index(Request $request): JsonResponse
     {
@@ -31,25 +31,19 @@ class CoachApiController extends Controller
 
         // Only coaches can access their own data
         if ($user->isCoach()) {
-            $coaches = CoachProfile::where('user_id', $user->id)
-                ->with('user:id,name,email')
-                ->get();
+            $coaches = CoachProfile::where('user_id', $user->id)->with('user:id,name,email')->get();
         } else {
-            // Users can see all verified coaches
-            $coaches = CoachProfile::where('is_verified', true)
-                ->where('is_available', true)
-                ->with('user:id,name,email')
-                ->get();
+            $coaches = CoachProfile::with('user:id,name,email')->get();
         }
 
         return $this->successResponse(
             data: $coaches,
-            message: 'Coach profiles retrieved successfully'
+            message: 'Coaches retrieved successfully'
         );
     }
 
     /**
-     * Display the specified coach profile.
+     * Display the specified coach.
      */
     public function show(Request $request, string $id): JsonResponse
     {
@@ -78,7 +72,7 @@ class CoachApiController extends Controller
     }
 
     /**
-     * Update the authenticated coach's profile.
+     * Update the coach profile.
      */
     public function update(UpdateCoachProfileRequest $request, string $id): JsonResponse
     {

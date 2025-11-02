@@ -54,7 +54,7 @@ class UpdateProfileRequest extends FormRequest
     {
         throw new HttpResponseException(
             $this->validationErrorResponse(
-                errors: $validator->errors(),
+                errors: $validator->errors()->toArray(),
                 message: 'Profile update validation failed'
             )
         );

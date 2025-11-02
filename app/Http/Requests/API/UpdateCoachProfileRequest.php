@@ -73,7 +73,7 @@ class UpdateCoachProfileRequest extends FormRequest
     {
         throw new HttpResponseException(
             $this->validationErrorResponse(
-                errors: $validator->errors(),
+                errors: $validator->errors()->toArray(),
                 message: 'Coach profile update validation failed'
             )
         );

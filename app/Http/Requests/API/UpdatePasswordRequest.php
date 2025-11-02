@@ -54,7 +54,7 @@ class UpdatePasswordRequest extends FormRequest
     {
         throw new HttpResponseException(
             $this->validationErrorResponse(
-                errors: $validator->errors(),
+                errors: $validator->errors()->toArray(),
                 message: 'Password update validation failed'
             )
         );

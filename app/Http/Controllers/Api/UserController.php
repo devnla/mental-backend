@@ -10,25 +10,16 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class UserApiController extends Controller
+class UserController extends Controller
 {
     use ApiResponse;
 
     /**
-     * Display authenticated user with their profile.
+     * Display authenticated user profile.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
-
-        // Load appropriate profile based on role
-        if ($user->isCoach()) {
-            $user->load('coachProfile');
-            $profile = $user->coachProfile;
-        } else {
-            $user->load('userProfile');
-            $profile = $user->userProfile;
-        }
 
         return $this->successResponse(
             data: [
@@ -38,7 +29,6 @@ class UserApiController extends Controller
                 'email_verified_at' => $user->email_verified_at,
                 'roles' => $user->getRoleNames(),
                 'permissions' => $user->getAllPermissions()->pluck('name'),
-                'profile' => $profile,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
             ],
@@ -47,7 +37,7 @@ class UserApiController extends Controller
     }
 
     /**
-     * Update authenticated user account details.
+     * Update authenticated user profile.
      */
     public function update(UpdateProfileRequest $request): JsonResponse
     {
@@ -61,9 +51,11 @@ class UserApiController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'email_verified_at' => $user->email_verified_at,
+                'roles' => $user->getRoleNames(),
+                'permissions' => $user->getAllPermissions()->pluck('name'),
                 'updated_at' => $user->updated_at,
             ],
-            message: 'Account updated successfully'
+            message: 'Profile updated successfully'
         );
     }
 
