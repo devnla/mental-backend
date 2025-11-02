@@ -63,87 +63,87 @@
 
 :root {
     /* Light Mode - Off-white background with mental health color palette */
-    --background: #FAFAFA;
+    --background: #fafafa;
     --foreground: #333333;
-    --card: #FFFFFF;
+    --card: #ffffff;
     --card-foreground: #333333;
-    --popover: #FFFFFF;
+    --popover: #ffffff;
     --popover-foreground: #333333;
     /* Primary: Soft Green */
-    --primary: #A8D5BA;
-    --primary-foreground: #FFFFFF;
+    --primary: #a8d5ba;
+    --primary-foreground: #ffffff;
     /* Secondary: Lavender/Lilac */
-    --secondary: #C3B1E1;
+    --secondary: #c3b1e1;
     --secondary-foreground: #333333;
     /* Muted: Warm Beige */
-    --muted: #FFF8E7;
+    --muted: #fff8e7;
     --muted-foreground: #666666;
     /* Accent: Muted Blue */
-    --accent: #90CAF9;
+    --accent: #90caf9;
     --accent-foreground: #333333;
-    --destructive: #EF4444;
-    --destructive-foreground: #FFFFFF;
-    --border: #E5E5E5;
-    --input: #FFFFFF;
-    --ring: #A8D5BA;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e5e5e5;
+    --input: #ffffff;
+    --ring: #a8d5ba;
     /* Chart colors using the palette */
-    --chart-1: #A8D5BA;
-    --chart-2: #90CAF9;
-    --chart-3: #C3B1E1;
-    --chart-4: #8BC34A;
-    --chart-5: #64B5F6;
+    --chart-1: #a8d5ba;
+    --chart-2: #90caf9;
+    --chart-3: #c3b1e1;
+    --chart-4: #8bc34a;
+    --chart-5: #64b5f6;
     --radius: 0.625rem;
     /* Sidebar styling */
-    --sidebar: #FAFAFA;
+    --sidebar: #fafafa;
     --sidebar-foreground: #333333;
-    --sidebar-primary: #A8D5BA;
-    --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #90CAF9;
+    --sidebar-primary: #a8d5ba;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #90caf9;
     --sidebar-accent-foreground: #333333;
-    --sidebar-border: #E5E5E5;
-    --sidebar-ring: #A8D5BA;
+    --sidebar-border: #e5e5e5;
+    --sidebar-ring: #a8d5ba;
 }
 
 .dark {
     /* Dark Mode - Adjusted mental health palette for dark background */
-    --background: #1A1A1A;
-    --foreground: #F5F5F5;
-    --card: #2A2A2A;
-    --card-foreground: #F5F5F5;
-    --popover: #2A2A2A;
-    --popover-foreground: #F5F5F5;
+    --background: #1a1a1a;
+    --foreground: #f5f5f5;
+    --card: #2a2a2a;
+    --card-foreground: #f5f5f5;
+    --popover: #2a2a2a;
+    --popover-foreground: #f5f5f5;
     /* Primary: Soft Green (brightened for dark mode) */
-    --primary: #66BB6A;
-    --primary-foreground: #1A1A1A;
+    --primary: #66bb6a;
+    --primary-foreground: #1a1a1a;
     /* Secondary: Lavender (brightened) */
-    --secondary: #B39DDB;
-    --secondary-foreground: #F5F5F5;
+    --secondary: #b39ddb;
+    --secondary-foreground: #f5f5f5;
     /* Muted: Warm Beige (darkened) */
-    --muted: #3A3A2A;
-    --muted-foreground: #CCCCCC;
+    --muted: #3a3a2a;
+    --muted-foreground: #cccccc;
     /* Accent: Muted Blue (brightened) */
-    --accent: #64B5F6;
-    --accent-foreground: #F5F5F5;
-    --destructive: #F87171;
-    --destructive-foreground: #1A1A1A;
+    --accent: #64b5f6;
+    --accent-foreground: #f5f5f5;
+    --destructive: #f87171;
+    --destructive-foreground: #1a1a1a;
     --border: #404040;
-    --input: #2A2A2A;
-    --ring: #66BB6A;
+    --input: #2a2a2a;
+    --ring: #66bb6a;
     /* Chart colors */
-    --chart-1: #66BB6A;
-    --chart-2: #64B5F6;
-    --chart-3: #B39DDB;
-    --chart-4: #8BC34A;
-    --chart-5: #90CAF9;
+    --chart-1: #66bb6a;
+    --chart-2: #64b5f6;
+    --chart-3: #b39ddb;
+    --chart-4: #8bc34a;
+    --chart-5: #90caf9;
     /* Sidebar styling */
-    --sidebar: #1A1A1A;
-    --sidebar-foreground: #F5F5F5;
-    --sidebar-primary: #66BB6A;
-    --sidebar-primary-foreground: #1A1A1A;
-    --sidebar-accent: #64B5F6;
-    --sidebar-accent-foreground: #F5F5F5;
+    --sidebar: #1a1a1a;
+    --sidebar-foreground: #f5f5f5;
+    --sidebar-primary: #66bb6a;
+    --sidebar-primary-foreground: #1a1a1a;
+    --sidebar-accent: #64b5f6;
+    --sidebar-accent-foreground: #f5f5f5;
     --sidebar-border: #404040;
-    --sidebar-ring: #66BB6A;
+    --sidebar-ring: #66bb6a;
 }
 
 @layer base {

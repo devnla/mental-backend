@@ -1,29 +1,26 @@
 import CrudDialog from '@/components/dialog/crud-dialog';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 
-export type EditUserDialogProps = {
-    user: {
-        id: number;
-        name: string;
-        email: string;
-    };
+export type CreateCoachDialogProps = {
     open: boolean;
     setOpen: (open: boolean) => void;
 };
 
-export default function EditUserDialog({
-    user,
+export default function CreateCoachDialog({
     open,
     setOpen,
-}: EditUserDialogProps) {
+}: CreateCoachDialogProps) {
     const [processing, setProcessing] = useState(false);
     const [formData, setFormData] = useState({
-        name: user.name,
-        email: user.email,
-        password: '',
-        password_confirmation: '',
+        name: '',
+        email: '',
+        specialties: '',
+        badges: '',
+        language: '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -34,14 +31,14 @@ export default function EditUserDialog({
         }
     };
 
-    const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateCoach = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setProcessing(true);
         setErrors({});
 
         try {
-            const response = await fetch(`/users/${user.id}`, {
-                method: 'PUT',
+            const response = await fetch('/coaches', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
@@ -50,6 +47,13 @@ export default function EditUserDialog({
             });
 
             if (response.ok) {
+                setFormData({
+                    name: '',
+                    email: '',
+                    specialties: '',
+                    badges: '',
+                    language: '',
+                });
                 setOpen(false);
                 window.location.reload();
             } else {
@@ -57,7 +61,7 @@ export default function EditUserDialog({
                 setErrors(data.errors || {});
             }
         } catch (error) {
-            console.error('Error updating user:', error);
+            console.error('Error creating coach:', error);
         } finally {
             setProcessing(false);
         }
@@ -65,14 +69,18 @@ export default function EditUserDialog({
 
     return (
         <CrudDialog
-            mode="edit"
-            title={`Edit ${user.name}`}
-            description="Update the user's details below."
+            mode="create"
             open={open}
             setOpen={setOpen}
-            onSubmit={handleEditUser}
+            onSubmit={handleCreateCoach}
             processing={processing}
-            submitLabel="Save Changes"
+            submitLabel="Create"
+            trigger={
+                <Button>
+                    <Plus className="h-4 w-4" />
+                    Add Coach
+                </Button>
+            }
             formContent={
                 <div className="space-y-4">
                     <div className="space-y-2">
@@ -85,6 +93,7 @@ export default function EditUserDialog({
                                 handleInputChange('name', e.target.value)
                             }
                             className={errors.name ? 'border-destructive' : ''}
+                            placeholder="Enter coach's name"
                             required
                         />
                         {errors.name && (
@@ -104,6 +113,7 @@ export default function EditUserDialog({
                                 handleInputChange('email', e.target.value)
                             }
                             className={errors.email ? 'border-destructive' : ''}
+                            placeholder="Enter coach's email"
                             required
                         />
                         {errors.email && (
@@ -114,51 +124,64 @@ export default function EditUserDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password">
-                            New Password (optional)
-                        </Label>
+                        <Label htmlFor="specialties">Specialties</Label>
                         <Input
-                            id="password"
-                            type="password"
-                            value={formData.password}
+                            id="specialties"
+                            type="text"
+                            value={formData.specialties}
                             onChange={(e) =>
-                                handleInputChange('password', e.target.value)
+                                handleInputChange('specialties', e.target.value)
                             }
                             className={
-                                errors.password ? 'border-destructive' : ''
+                                errors.specialties ? 'border-destructive' : ''
                             }
-                            placeholder="Leave blank to keep current"
+                            placeholder="Enter specialties (comma-separated)"
                         />
-                        {errors.password && (
+                        {errors.specialties && (
                             <p className="text-sm text-destructive">
-                                {errors.password}
+                                {errors.specialties}
                             </p>
                         )}
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password_confirmation">
-                            Confirm New Password
-                        </Label>
+                        <Label htmlFor="badges">Badges</Label>
                         <Input
-                            id="password_confirmation"
-                            type="password"
-                            value={formData.password_confirmation}
+                            id="badges"
+                            type="text"
+                            value={formData.badges}
                             onChange={(e) =>
-                                handleInputChange(
-                                    'password_confirmation',
-                                    e.target.value,
-                                )
+                                handleInputChange('badges', e.target.value)
                             }
                             className={
-                                errors.password_confirmation
-                                    ? 'border-destructive'
-                                    : ''
+                                errors.badges ? 'border-destructive' : ''
                             }
+                            placeholder="Enter badges (comma-separated)"
                         />
-                        {errors.password_confirmation && (
+                        {errors.badges && (
                             <p className="text-sm text-destructive">
-                                {errors.password_confirmation}
+                                {errors.badges}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="language">Language</Label>
+                        <Input
+                            id="language"
+                            type="text"
+                            value={formData.language}
+                            onChange={(e) =>
+                                handleInputChange('language', e.target.value)
+                            }
+                            className={
+                                errors.language ? 'border-destructive' : ''
+                            }
+                            placeholder="Enter language"
+                        />
+                        {errors.language && (
+                            <p className="text-sm text-destructive">
+                                {errors.language}
                             </p>
                         )}
                     </div>

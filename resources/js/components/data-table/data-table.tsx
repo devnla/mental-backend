@@ -57,6 +57,7 @@ export function DataTable<TData, TValue>({
         pageIndex: 0,
         pageSize: 20,
     });
+
     const fuzzyFilter = (
         row: Row<TData>,
         columnId: string,
@@ -95,42 +96,53 @@ export function DataTable<TData, TValue>({
     };
 
     return (
-        <div>
+        <div className="space-y-4">
+            {/* Toolbar */}
             {useFilter && sortableColumns && sortableColumns.length > 0 && (
-                <div className="flex flex-col justify-between gap-y-2 pb-4 lg:flex-row lg:items-center lg:gap-y-0">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     {/* Filter */}
                     {useFilter && (
-                        <DataTableFilter
-                            globalFilterValue={globalFilter}
-                            handleFilterChange={setGlobalFilter}
-                            clearFilter={() => setGlobalFilter('')}
-                        />
+                        <div className="flex-1">
+                            <DataTableFilter
+                                globalFilterValue={globalFilter}
+                                handleFilterChange={setGlobalFilter}
+                                clearFilter={() => setGlobalFilter('')}
+                            />
+                        </div>
                     )}
 
                     {/* Sort */}
                     {sortableColumns && sortableColumns.length > 0 && (
-                        <DataTableSort
-                            sortableColumns={sortableColumns}
-                            selectedSortColumn={selectedSortColumn}
-                            setSelectedSortColumn={setSelectedSortColumn}
-                            sortDirection={sortDirection}
-                            setSortDirection={setSortDirection}
-                            handleSortChange={handleSortChange}
-                            clearSort={clearSort}
-                        />
+                        <div className="flex gap-2">
+                            <DataTableSort
+                                sortableColumns={sortableColumns}
+                                selectedSortColumn={selectedSortColumn}
+                                setSelectedSortColumn={setSelectedSortColumn}
+                                sortDirection={sortDirection}
+                                setSortDirection={setSortDirection}
+                                handleSortChange={handleSortChange}
+                                clearSort={clearSort}
+                            />
+                        </div>
                     )}
                 </div>
             )}
 
-            {/* Table */}
-            <div className="rounded-md border">
+            {/* Table Container */}
+            <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm dark:border-gray-800">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-gray-50 dark:bg-gray-900/50">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow
+                                key={headerGroup.id}
+                                className="border-gray-200 dark:border-gray-800"
+                            >
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className="h-12 px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300"
+                                        >
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -152,9 +164,13 @@ export function DataTable<TData, TValue>({
                                     data-state={
                                         row.getIsSelected() && 'selected'
                                     }
+                                    className="border-gray-100 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900/50"
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell
+                                            key={cell.id}
+                                            className="h-14 px-4 py-3 text-gray-900 dark:text-gray-100"
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext(),
@@ -167,9 +183,9 @@ export function DataTable<TData, TValue>({
                             <TableRow>
                                 <TableCell
                                     colSpan={columns.length}
-                                    className="h-24 text-center"
+                                    className="h-24 text-center text-gray-500 dark:text-gray-400"
                                 >
-                                    No results.
+                                    No results found.
                                 </TableCell>
                             </TableRow>
                         )}

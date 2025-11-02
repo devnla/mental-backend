@@ -3,27 +3,31 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 
-export type EditUserDialogProps = {
-    user: {
+export type EditCoachDialogProps = {
+    coach: {
         id: number;
         name: string;
         email: string;
+        specialties?: string[];
+        badges?: string[];
+        language?: string;
     };
     open: boolean;
     setOpen: (open: boolean) => void;
 };
 
-export default function EditUserDialog({
-    user,
+export default function EditCoachDialog({
+    coach,
     open,
     setOpen,
-}: EditUserDialogProps) {
+}: EditCoachDialogProps) {
     const [processing, setProcessing] = useState(false);
     const [formData, setFormData] = useState({
-        name: user.name,
-        email: user.email,
-        password: '',
-        password_confirmation: '',
+        name: coach.name,
+        email: coach.email,
+        specialties: coach.specialties?.join(', ') || '',
+        badges: coach.badges?.join(', ') || '',
+        language: coach.language || '',
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -34,13 +38,13 @@ export default function EditUserDialog({
         }
     };
 
-    const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleEditCoach = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setProcessing(true);
         setErrors({});
 
         try {
-            const response = await fetch(`/users/${user.id}`, {
+            const response = await fetch(`/coaches/${coach.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,7 +61,7 @@ export default function EditUserDialog({
                 setErrors(data.errors || {});
             }
         } catch (error) {
-            console.error('Error updating user:', error);
+            console.error('Error updating coach:', error);
         } finally {
             setProcessing(false);
         }
@@ -66,11 +70,11 @@ export default function EditUserDialog({
     return (
         <CrudDialog
             mode="edit"
-            title={`Edit ${user.name}`}
-            description="Update the user's details below."
+            title={`Edit ${coach.name}`}
+            description="Update the coach's details below."
             open={open}
             setOpen={setOpen}
-            onSubmit={handleEditUser}
+            onSubmit={handleEditCoach}
             processing={processing}
             submitLabel="Save Changes"
             formContent={
@@ -114,51 +118,64 @@ export default function EditUserDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password">
-                            New Password (optional)
-                        </Label>
+                        <Label htmlFor="specialties">Specialties</Label>
                         <Input
-                            id="password"
-                            type="password"
-                            value={formData.password}
+                            id="specialties"
+                            type="text"
+                            value={formData.specialties}
                             onChange={(e) =>
-                                handleInputChange('password', e.target.value)
+                                handleInputChange('specialties', e.target.value)
                             }
                             className={
-                                errors.password ? 'border-destructive' : ''
+                                errors.specialties ? 'border-destructive' : ''
                             }
-                            placeholder="Leave blank to keep current"
+                            placeholder="Enter specialties (comma-separated)"
                         />
-                        {errors.password && (
+                        {errors.specialties && (
                             <p className="text-sm text-destructive">
-                                {errors.password}
+                                {errors.specialties}
                             </p>
                         )}
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="password_confirmation">
-                            Confirm New Password
-                        </Label>
+                        <Label htmlFor="badges">Badges</Label>
                         <Input
-                            id="password_confirmation"
-                            type="password"
-                            value={formData.password_confirmation}
+                            id="badges"
+                            type="text"
+                            value={formData.badges}
                             onChange={(e) =>
-                                handleInputChange(
-                                    'password_confirmation',
-                                    e.target.value,
-                                )
+                                handleInputChange('badges', e.target.value)
                             }
                             className={
-                                errors.password_confirmation
-                                    ? 'border-destructive'
-                                    : ''
+                                errors.badges ? 'border-destructive' : ''
                             }
+                            placeholder="Enter badges (comma-separated)"
                         />
-                        {errors.password_confirmation && (
+                        {errors.badges && (
                             <p className="text-sm text-destructive">
-                                {errors.password_confirmation}
+                                {errors.badges}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="language">Language</Label>
+                        <Input
+                            id="language"
+                            type="text"
+                            value={formData.language}
+                            onChange={(e) =>
+                                handleInputChange('language', e.target.value)
+                            }
+                            className={
+                                errors.language ? 'border-destructive' : ''
+                            }
+                            placeholder="Enter language"
+                        />
+                        {errors.language && (
+                            <p className="text-sm text-destructive">
+                                {errors.language}
                             </p>
                         )}
                     </div>

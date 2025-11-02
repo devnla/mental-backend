@@ -16,8 +16,7 @@ type EditCoachForm = {
 
 export default function DeleteCoachForm({ coach }: DeleteCoachFormProps) {
     const [open, setOpen] = useState(false);
-    const { delete: destroy, processing } =
-        useForm<Required<EditCoachForm>>();
+    const { delete: destroy, processing } = useForm<Required<EditCoachForm>>();
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -41,4 +40,3 @@ export default function DeleteCoachForm({ coach }: DeleteCoachFormProps) {
         />
     );
 }
-
