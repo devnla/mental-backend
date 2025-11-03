@@ -3,82 +3,86 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\API\UpdatePasswordRequest;
+use App\Http\Requests\API\UpdateProfileRequest;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserApiController extends Controller
 {
+    use ApiResponse;
+
     /**
-     * Display authenticated user profile.
+     * Display authenticated user with their profile.
      */
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
 
-        return response()->json([
-            'user' => [
+        // Load appropriate profile based on role
+        if ($user->isCoach()) {
+            $user->load('coachProfile');
+            $profile = $user->coachProfile;
+        } else {
+            $user->load('userProfile');
+            $profile = $user->userProfile;
+        }
+
+        return $this->successResponse(
+            data: [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at,
                 'roles' => $user->getRoleNames(),
                 'permissions' => $user->getAllPermissions()->pluck('name'),
-                'email_verified_at' => $user->email_verified_at,
+                'profile' => $profile,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
             ],
-        ]);
+            message: 'Profile retrieved successfully'
+        );
     }
 
     /**
-     * Update authenticated user profile.
+     * Update authenticated user account details.
      */
-    public function update(Request $request): JsonResponse
+    public function update(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
 
-        $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,'.$user->id,
-        ]);
-
         $user->update($request->only(['name', 'email']));
 
-        return response()->json([
-            'message' => 'Profile updated successfully',
-            'user' => [
+        return $this->updatedResponse(
+            data: [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name'),
+                'email_verified_at' => $user->email_verified_at,
+                'updated_at' => $user->updated_at,
             ],
-        ]);
+            message: 'Account updated successfully'
+        );
     }
 
     /**
      * Update user password.
      */
-    public function updatePassword(Request $request): JsonResponse
+    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
     {
         $user = $request->user();
-
-        $request->validate([
-            'current_password' => 'required',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        if (! Hash::check($request->current_password, $user->password)) {
-            return response()->json([
-                'message' => 'Current password is incorrect.',
-            ], 422);
-        }
 
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json([
-            'message' => 'Password updated successfully',
-        ]);
+        // Revoke all tokens except current
+        $user->tokens()->where('id', '!=', $user->currentAccessToken()->id)->delete();
+
+        return $this->updatedResponse(
+            message: 'Password updated successfully. All other sessions have been logged out.'
+        );
     }
 }

@@ -111,185 +111,170 @@ export default function CoachForm({
             trigger={trigger}
             onSubmit={submit}
             formContent={
-                    <div className="flex flex-col gap-y-4 p-4 sm:p-0">
-                        <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
-                            <Input
-                                id="name"
-                                type="text"
-                                required
-                                autoComplete="name"
-                                value={data.name}
-                                onChange={(e) =>
-                                    setData('name', e.target.value)
-                                }
-                                disabled={processing}
-                                placeholder="Coach name"
-                            />
-                            <InputError message={errors.name} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                required
-                                autoComplete="email"
-                                value={data.email}
-                                onChange={(e) =>
-                                    setData('email', e.target.value)
-                                }
-                                disabled={processing}
-                                placeholder="Coach email"
-                            />
-                            <InputError message={errors.email} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="avatar">Avatar (Optional)</Label>
-                            <Input
-                                id="avatar"
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) =>
-                                    setData(
-                                        'avatar',
-                                        e.target.files
-                                            ? e.target.files[0]
-                                            : null,
-                                    )
-                                }
-                                disabled={processing || data.remove_avatar}
-                            />
-                            <InputError message={errors.avatar} />
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <Checkbox
-                                id="remove_avatar"
-                                name="remove_avatar"
-                                checked={data.remove_avatar}
-                                onCheckedChange={(checked) => {
-                                    setData('avatar', null);
-                                    setData(
-                                        'remove_avatar',
-                                        checked as boolean,
-                                    );
-                                }}
-                                disabled={processing}
-                            />
-                            <Label htmlFor="remove_avatar">Remove avatar</Label>
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="bio">Bio (Optional)</Label>
-                            <Textarea
-                                id="bio"
-                                value={data.bio || ''}
-                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setData('bio', e.target.value)}
-                                disabled={processing}
-                                placeholder="Coach bio"
-                                rows={3}
-                            />
-                            <InputError message={errors.bio} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label>Specialties (Optional)</Label>
-                            <div className="grid grid-cols-2 gap-2">
-                                {availableSpecialties.map((specialty) => (
-                                    <div
-                                        key={specialty}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Checkbox
-                                            id={`specialty-${specialty}`}
-                                            checked={
-                                                data.specialties?.includes(
-                                                    specialty,
-                                                ) || false
-                                            }
-                                            onCheckedChange={() =>
-                                                handleSpecialtyToggle(specialty)
-                                            }
-                                            disabled={processing}
-                                        />
-                                        <Label
-                                            htmlFor={`specialty-${specialty}`}
-                                            className="cursor-pointer text-sm"
-                                        >
-                                            {specialty}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </div>
-                            <InputError message={errors.specialties} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label>Badges (Optional)</Label>
-                            <div className="grid grid-cols-4 gap-2">
-                                {availableBadges.map((badge) => (
-                                    <div
-                                        key={badge}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Checkbox
-                                            id={`badge-${badge}`}
-                                            checked={
-                                                data.badges?.includes(badge) ||
-                                                false
-                                            }
-                                            onCheckedChange={() =>
-                                                handleBadgeToggle(badge)
-                                            }
-                                            disabled={processing}
-                                        />
-                                        <Label
-                                            htmlFor={`badge-${badge}`}
-                                            className="cursor-pointer text-sm"
-                                        >
-                                            {badge}
-                                        </Label>
-                                    </div>
-                                ))}
-                            </div>
-                            <InputError message={errors.badges} />
-                        </div>
-
-                        <div className="grid gap-2">
-                            <Label htmlFor="language">Languages *</Label>
-                            <MultiSelect
-                                options={availableLanguages}
-                                selected={data.language || []}
-                                onChange={(values) =>
-                                    setData('language', values)
-                                }
-                                placeholder="Select languages"
-                                searchable={true}
-                                disabled={processing}
-                            />
-                            <InputError message={errors.language} />
-                        </div>
+                <div className="flex flex-col gap-y-4 p-4 sm:p-0">
+                    <div className="grid gap-2">
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                            id="name"
+                            type="text"
+                            required
+                            autoComplete="name"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            disabled={processing}
+                            placeholder="Coach name"
+                        />
+                        <InputError message={errors.name} />
                     </div>
-                }
-                formButton={
-                    <Button type="submit" disabled={processing}>
-                        {processing && (
-                            <Ring
-                                size="14"
-                                stroke="2"
-                                speed="2.5"
-                                color="gray"
-                            />
-                        )}
-                        Save Coach
-                    </Button>
-                }
-                open={open}
-                setOpen={setOpen}
-            />
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            required
+                            autoComplete="email"
+                            value={data.email}
+                            onChange={(e) => setData('email', e.target.value)}
+                            disabled={processing}
+                            placeholder="Coach email"
+                        />
+                        <InputError message={errors.email} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="avatar">Avatar (Optional)</Label>
+                        <Input
+                            id="avatar"
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) =>
+                                setData(
+                                    'avatar',
+                                    e.target.files ? e.target.files[0] : null,
+                                )
+                            }
+                            disabled={processing || data.remove_avatar}
+                        />
+                        <InputError message={errors.avatar} />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Checkbox
+                            id="remove_avatar"
+                            name="remove_avatar"
+                            checked={data.remove_avatar}
+                            onCheckedChange={(checked) => {
+                                setData('avatar', null);
+                                setData('remove_avatar', checked as boolean);
+                            }}
+                            disabled={processing}
+                        />
+                        <Label htmlFor="remove_avatar">Remove avatar</Label>
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="bio">Bio (Optional)</Label>
+                        <Textarea
+                            id="bio"
+                            value={data.bio || ''}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLTextAreaElement>,
+                            ) => setData('bio', e.target.value)}
+                            disabled={processing}
+                            placeholder="Coach bio"
+                            rows={3}
+                        />
+                        <InputError message={errors.bio} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Specialties (Optional)</Label>
+                        <div className="grid grid-cols-2 gap-2">
+                            {availableSpecialties.map((specialty) => (
+                                <div
+                                    key={specialty}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Checkbox
+                                        id={`specialty-${specialty}`}
+                                        checked={
+                                            data.specialties?.includes(
+                                                specialty,
+                                            ) || false
+                                        }
+                                        onCheckedChange={() =>
+                                            handleSpecialtyToggle(specialty)
+                                        }
+                                        disabled={processing}
+                                    />
+                                    <Label
+                                        htmlFor={`specialty-${specialty}`}
+                                        className="cursor-pointer text-sm"
+                                    >
+                                        {specialty}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
+                        <InputError message={errors.specialties} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label>Badges (Optional)</Label>
+                        <div className="grid grid-cols-4 gap-2">
+                            {availableBadges.map((badge) => (
+                                <div
+                                    key={badge}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Checkbox
+                                        id={`badge-${badge}`}
+                                        checked={
+                                            data.badges?.includes(badge) ||
+                                            false
+                                        }
+                                        onCheckedChange={() =>
+                                            handleBadgeToggle(badge)
+                                        }
+                                        disabled={processing}
+                                    />
+                                    <Label
+                                        htmlFor={`badge-${badge}`}
+                                        className="cursor-pointer text-sm"
+                                    >
+                                        {badge}
+                                    </Label>
+                                </div>
+                            ))}
+                        </div>
+                        <InputError message={errors.badges} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="language">Languages *</Label>
+                        <MultiSelect
+                            options={availableLanguages}
+                            selected={data.language || []}
+                            onChange={(values) => setData('language', values)}
+                            placeholder="Select languages"
+                            searchable={true}
+                            disabled={processing}
+                        />
+                        <InputError message={errors.language} />
+                    </div>
+                </div>
+            }
+            formButton={
+                <Button type="submit" disabled={processing}>
+                    {processing && (
+                        <Ring size="14" stroke="2" speed="2.5" color="gray" />
+                    )}
+                    Save Coach
+                </Button>
+            }
+            open={open}
+            setOpen={setOpen}
+        />
     );
 }
-

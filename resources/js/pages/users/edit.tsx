@@ -1,214 +1,169 @@
-import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import CrudDialog from '@/components/dialog/crud-dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
 
-interface User {
-    id: number;
-    name: string;
-    email: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
-}
+export type EditUserDialogProps = {
+    user: {
+        id: number;
+        name: string;
+        email: string;
+    };
+    open: boolean;
+    setOpen: (open: boolean) => void;
+};
 
-interface EditUserProps {
-    user: User;
-}
-
-export default function EditUser({ user }: EditUserProps) {
-    const { data, setData, put, processing, errors } = useForm({
+export default function EditUserDialog({
+    user,
+    open,
+    setOpen,
+}: EditUserDialogProps) {
+    const [processing, setProcessing] = useState(false);
+    const [formData, setFormData] = useState({
         name: user.name,
         email: user.email,
         password: '',
         password_confirmation: '',
     });
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const submit = (e: React.FormEvent) => {
+    const handleInputChange = (field: string, value: string) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        if (errors[field]) {
+            setErrors((prev) => ({ ...prev, [field]: '' }));
+        }
+    };
+
+    const handleEditUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        put(`/users/${user.id}`);
+        setProcessing(true);
+        setErrors({});
+
+        try {
+            const response = await fetch(`/users/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setOpen(false);
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                setErrors(data.errors || {});
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+        } finally {
+            setProcessing(false);
+        }
     };
 
     return (
-        <AppLayout>
-            <Head title="Edit User" />
+        <CrudDialog
+            mode="edit"
+            title={`Edit ${user.name}`}
+            description="Update the user's details below."
+            open={open}
+            setOpen={setOpen}
+            onSubmit={handleEditUser}
+            processing={processing}
+            submitLabel="Save Changes"
+            formContent={
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Name</Label>
+                        <Input
+                            id="name"
+                            type="text"
+                            value={formData.name}
+                            onChange={(e) =>
+                                handleInputChange('name', e.target.value)
+                            }
+                            className={errors.name ? 'border-destructive' : ''}
+                            required
+                        />
+                        {errors.name && (
+                            <p className="text-sm text-destructive">
+                                {errors.name}
+                            </p>
+                        )}
+                    </div>
 
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            {/* Header */}
-                            <div className="mb-6 flex items-center gap-4">
-                                <Link href="/users">
-                                    <Button variant="ghost" size="sm">
-                                        <ArrowLeft className="mr-2 h-4 w-4" />
-                                        Back to Users
-                                    </Button>
-                                </Link>
-                                <h2 className="text-2xl font-bold">
-                                    Edit User: {user.name}
-                                </h2>
-                            </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) =>
+                                handleInputChange('email', e.target.value)
+                            }
+                            className={errors.email ? 'border-destructive' : ''}
+                            required
+                        />
+                        {errors.email && (
+                            <p className="text-sm text-destructive">
+                                {errors.email}
+                            </p>
+                        )}
+                    </div>
 
-                            {/* Form */}
-                            <Card className="max-w-2xl">
-                                <CardHeader>
-                                    <CardTitle>User Information</CardTitle>
-                                    <CardDescription>
-                                        Update the user's details below.
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <form
-                                        onSubmit={submit}
-                                        className="space-y-6"
-                                    >
-                                        <div className="space-y-2">
-                                            <Label htmlFor="name">Name</Label>
-                                            <Input
-                                                id="name"
-                                                type="text"
-                                                value={data.name}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'name',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={
-                                                    errors.name
-                                                        ? 'border-red-500'
-                                                        : ''
-                                                }
-                                                placeholder="Enter user's name"
-                                            />
-                                            {errors.name && (
-                                                <p className="text-sm text-red-600">
-                                                    {errors.name}
-                                                </p>
-                                            )}
-                                        </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password">
+                            New Password (optional)
+                        </Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) =>
+                                handleInputChange('password', e.target.value)
+                            }
+                            className={
+                                errors.password ? 'border-destructive' : ''
+                            }
+                            placeholder="Leave blank to keep current"
+                        />
+                        {errors.password && (
+                            <p className="text-sm text-destructive">
+                                {errors.password}
+                            </p>
+                        )}
+                    </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="email">Email</Label>
-                                            <Input
-                                                id="email"
-                                                type="email"
-                                                value={data.email}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'email',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={
-                                                    errors.email
-                                                        ? 'border-red-500'
-                                                        : ''
-                                                }
-                                                placeholder="Enter user's email"
-                                            />
-                                            {errors.email && (
-                                                <p className="text-sm text-red-600">
-                                                    {errors.email}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="password">
-                                                New Password (Optional)
-                                            </Label>
-                                            <Input
-                                                id="password"
-                                                type="password"
-                                                value={data.password}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'password',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={
-                                                    errors.password
-                                                        ? 'border-red-500'
-                                                        : ''
-                                                }
-                                                placeholder="Leave blank to keep current password"
-                                            />
-                                            {errors.password && (
-                                                <p className="text-sm text-red-600">
-                                                    {errors.password}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label htmlFor="password_confirmation">
-                                                Confirm New Password
-                                            </Label>
-                                            <Input
-                                                id="password_confirmation"
-                                                type="password"
-                                                value={
-                                                    data.password_confirmation
-                                                }
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'password_confirmation',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className={
-                                                    errors.password_confirmation
-                                                        ? 'border-red-500'
-                                                        : ''
-                                                }
-                                                placeholder="Confirm new password"
-                                            />
-                                            {errors.password_confirmation && (
-                                                <p className="text-sm text-red-600">
-                                                    {
-                                                        errors.password_confirmation
-                                                    }
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="flex gap-4">
-                                            <Button
-                                                type="submit"
-                                                disabled={processing}
-                                            >
-                                                {processing
-                                                    ? 'Updating...'
-                                                    : 'Update User'}
-                                            </Button>
-                                            <Link href="/users">
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                >
-                                                    Cancel
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </form>
-                                </CardContent>
-                            </Card>
-                        </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password_confirmation">
+                            Confirm New Password
+                        </Label>
+                        <Input
+                            id="password_confirmation"
+                            type="password"
+                            value={formData.password_confirmation}
+                            onChange={(e) =>
+                                handleInputChange(
+                                    'password_confirmation',
+                                    e.target.value,
+                                )
+                            }
+                            className={
+                                errors.password_confirmation
+                                    ? 'border-destructive'
+                                    : ''
+                            }
+                        />
+                        {errors.password_confirmation && (
+                            <p className="text-sm text-destructive">
+                                {errors.password_confirmation}
+                            </p>
+                        )}
                     </div>
                 </div>
-            </div>
-        </AppLayout>
+            }
+        />
     );
 }

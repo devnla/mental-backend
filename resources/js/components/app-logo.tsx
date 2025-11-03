@@ -8,10 +8,10 @@ export default function AppLogo() {
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
                 <span className="mb-0.5 truncate leading-tight font-semibold">
-                    Backend Project
+                    Mental Coaching
                 </span>
                 <span className="text-sidebar-secondary-foreground text-xs">
-                    React & Inertia.js
+                    Admin Panel
                 </span>
             </div>
         </>

@@ -14,7 +14,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'verified', 'admin.web'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
@@ -29,8 +29,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('coaches', [CoachController::class, 'index'])->name('coaches.index');
     Route::get('coaches/{id}', [CoachController::class, 'show'])->name('coaches.show');
     Route::post('coaches', [CoachController::class, 'store'])->name('coaches.store');
-    Route::post('coaches/{coach}', [CoachController::class, 'update'])->name('coaches.update');
-    Route::delete('coaches/{coach}', [CoachController::class, 'destroy'])->name('coaches.destroy');
+    Route::post('coaches/{coachProfile}', [CoachController::class, 'update'])->name('coaches.update');
+    Route::delete('coaches/{coachProfile}', [CoachController::class, 'destroy'])->name('coaches.destroy');
 
     Route::get('data-export/{type}', [ExportController::class, '__invoke'])->name('data-export');
 });

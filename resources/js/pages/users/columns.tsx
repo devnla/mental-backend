@@ -7,9 +7,12 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { Edit, Eye, MoreHorizontal, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import EditUserDialog from './edit';
+import ViewUserDialog from './view';
 
 export type User = {
     id: number;
@@ -104,6 +107,8 @@ export const columns: ColumnDef<User>[] = [
         header: 'Actions',
         cell: ({ row }) => {
             const user = row.original;
+            const [viewOpen, setViewOpen] = useState(false);
+            const [editOpen, setEditOpen] = useState(false);
 
             const handleDelete = () => {
                 if (confirm(`Are you sure you want to delete ${user.name}?`)) {
@@ -112,34 +117,50 @@ export const columns: ColumnDef<User>[] = [
             };
 
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                            <Link href={`/users/${user.id}`}>
+                <>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                                onClick={() => setViewOpen(true)}
+                                className="cursor-pointer"
+                            >
                                 <Eye className="mr-2 h-4 w-4" />
                                 View
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                            <Link href={`/users/${user.id}/edit`}>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => setEditOpen(true)}
+                                className="cursor-pointer"
+                            >
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={handleDelete}
-                            className="text-red-600"
-                        >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={handleDelete}
+                                className="cursor-pointer text-red-600"
+                            >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <ViewUserDialog
+                        user={user}
+                        open={viewOpen}
+                        setOpen={setViewOpen}
+                    />
+
+                    <EditUserDialog
+                        user={user}
+                        open={editOpen}
+                        setOpen={setEditOpen}
+                    />
+                </>
             );
         },
     },

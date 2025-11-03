@@ -1,7 +1,10 @@
-"use client";
+'use client';
 
-import {format} from "date-fns";
+import { format } from 'date-fns';
 
+import { useCalendar } from '@/components/calendar/contexts/calendar-context';
+import { formatTime, getColorClass } from '@/components/calendar/helpers';
+import type { IEvent } from '@/components/calendar/interfaces';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,11 +14,8 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import type {IEvent} from "@/components/calendar/interfaces";
-import {formatTime, getColorClass} from "@/components/calendar/helpers";
-import {cn} from "@/lib/utils";
-import {useCalendar} from "@/components/calendar/contexts/calendar-context";
+} from '@/components/ui/alert-dialog';
+import { cn } from '@/lib/utils';
 
 interface EventDropConfirmationDialogProps {
     open: boolean;
@@ -28,16 +28,15 @@ interface EventDropConfirmationDialogProps {
 }
 
 export function EventDropConfirmationDialog({
-                                                open,
-                                                onOpenChange,
-                                                event,
-                                                newStartDate,
-                                                newEndDate,
-                                                onConfirm,
-                                                onCancel,
-                                            }: EventDropConfirmationDialogProps) {
-
-    const {use24HourFormat} = useCalendar();
+    open,
+    onOpenChange,
+    event,
+    newStartDate,
+    newEndDate,
+    onConfirm,
+    onCancel,
+}: EventDropConfirmationDialogProps) {
+    const { use24HourFormat } = useCalendar();
 
     if (!event || !newStartDate || !newEndDate) {
         return null;
@@ -46,7 +45,10 @@ export function EventDropConfirmationDialog({
     const originalStart = new Date(event.startDate);
 
     const formatDate = (date: Date) => {
-        return format(date, "MMM dd, yyyy 'at '") + formatTime(date, use24HourFormat);
+        return (
+            format(date, "MMM dd, yyyy 'at '") +
+            formatTime(date, use24HourFormat)
+        );
     };
 
     const handleConfirm = () => {
@@ -66,16 +68,29 @@ export function EventDropConfirmationDialog({
                     <AlertDialogTitle>Confirm Event Move</AlertDialogTitle>
                     <AlertDialogDescription>
                         Are you sure you want to move
-                        <span className={cn(getColorClass(event.color), "mx-1 py-0.5 px-1 rounded-md")}>
-							{event.title}
-						</span>
+                        <span
+                            className={cn(
+                                getColorClass(event.color),
+                                'mx-1 rounded-md px-1 py-0.5',
+                            )}
+                        >
+                            {event.title}
+                        </span>
                         event from
-                        <strong className="mx-1">{formatDate(originalStart)}</strong> to
-                        <strong className="mx-1">{formatDate(newStartDate)}</strong>?
+                        <strong className="mx-1">
+                            {formatDate(originalStart)}
+                        </strong>{' '}
+                        to
+                        <strong className="mx-1">
+                            {formatDate(newStartDate)}
+                        </strong>
+                        ?
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel onClick={handleCancel}>
+                        Cancel
+                    </AlertDialogCancel>
                     <AlertDialogAction onClick={handleConfirm}>
                         Move Event
                     </AlertDialogAction>

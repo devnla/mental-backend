@@ -62,7 +62,9 @@ export default function FormDialog({
 
                         <DialogFooter>
                             <DialogClose asChild>
-                                <Button type="button" variant="outline">Cancel</Button>
+                                <Button type="button" variant="outline">
+                                    Cancel
+                                </Button>
                             </DialogClose>
                             {formButton}
                         </DialogFooter>
@@ -87,7 +89,9 @@ export default function FormDialog({
                     <DrawerFooter>
                         {formButton}
                         <DrawerClose asChild>
-                            <Button type="button" variant="outline">Cancel</Button>
+                            <Button type="button" variant="outline">
+                                Cancel
+                            </Button>
                         </DrawerClose>
                     </DrawerFooter>
                 </form>

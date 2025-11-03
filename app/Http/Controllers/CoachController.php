@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCoachRequest;
 use App\Http\Requests\UpdateCoachRequest;
-use App\Models\Coach;
+use App\Models\CoachProfile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -18,7 +18,7 @@ class CoachController extends Controller
     public function index(): Response
     {
         return Inertia::render('coaches/index', [
-            'coaches' => Coach::where('user_id', auth()->user()->id)
+            'coaches' => CoachProfile::with('user')
                 ->latest()
                 ->get(),
         ]);
@@ -29,16 +29,12 @@ class CoachController extends Controller
      */
     public function store(StoreCoachRequest $request): RedirectResponse
     {
-        $user = auth()->user();
-
         // Get latest coach number
-        $latestCoach = $user->coaches()
-            ->orderBy('coach_number', 'desc')
-            ->first();
+        $latestCoach = CoachProfile::orderBy('coach_number', 'desc')->first();
         $number = $latestCoach ? (int) explode('-', $latestCoach->coach_number)[1] : 0;
-        $formattedNumber = 'CH-'.str_pad($number + 1, 5, '0', STR_PAD_LEFT);
+        $formattedNumber = 'COACH-'.str_pad($number + 1, 5, '0', STR_PAD_LEFT);
 
-        $coach = $user->coaches()->create($request->merge([
+        $coach = CoachProfile::create($request->merge([
             'coach_number' => $formattedNumber,
         ])->all());
 
@@ -47,7 +43,7 @@ class CoachController extends Controller
             $coach->save();
         }
 
-        return to_route('coaches.index')->with('success', 'Coach created successfully.')
+        return to_route('coaches.index')->with('success', 'Coach profile created successfully.')
             ->with('description', $formattedNumber.' has been created.')
             ->with('timestamp', now()->timestamp);
     }
@@ -55,62 +51,62 @@ class CoachController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Coach $coach): Response
+    public function show(CoachProfile $coachProfile): Response
     {
         return Inertia::render('coaches/index', [
-            'coaches' => Coach::where('user_id', auth()->user()->id)
+            'coaches' => CoachProfile::with('user')
                 ->latest()
                 ->get(),
-            'show' => $coach->coach_number,
+            'show' => $coachProfile->coach_number,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCoachRequest $request, Coach $coach): RedirectResponse
+    public function update(UpdateCoachRequest $request, CoachProfile $coachProfile): RedirectResponse
     {
         $validated = $request->validated();
         unset($validated['avatar']);
         unset($validated['remove_avatar']);
-        $coach->fill($validated);
+        $coachProfile->fill($validated);
 
         if ($request->hasFile('avatar') && $request->file('avatar') !== null) {
             // Delete the old avatar if it exists
-            if ($coach->avatar) {
-                Storage::disk('public')->delete($coach->avatar);
+            if ($coachProfile->avatar) {
+                Storage::disk('public')->delete($coachProfile->avatar);
             }
 
-            $coach->avatar = $request->file('avatar')->store('avatars', 'public');
+            $coachProfile->avatar = $request->file('avatar')->store('avatars', 'public');
         }
 
         if ($request->boolean('remove_avatar')) {
-            if ($coach->avatar) {
-                Storage::disk('public')->delete($coach->avatar);
+            if ($coachProfile->avatar) {
+                Storage::disk('public')->delete($coachProfile->avatar);
             }
-            $coach->avatar = null;
+            $coachProfile->avatar = null;
         }
 
-        $coach->save();
+        $coachProfile->save();
 
-        return to_route('coaches.index')->with('success', 'Coach updated successfully.')
-            ->with('description', $coach->coach_number.' has been updated.')
+        return to_route('coaches.index')->with('success', 'Coach profile updated successfully.')
+            ->with('description', $coachProfile->coach_number.' has been updated.')
             ->with('timestamp', now()->timestamp);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Coach $coach): RedirectResponse
+    public function destroy(CoachProfile $coachProfile): RedirectResponse
     {
-        if ($coach->avatar) {
-            Storage::disk('public')->delete($coach->avatar);
+        if ($coachProfile->avatar) {
+            Storage::disk('public')->delete($coachProfile->avatar);
         }
 
-        $coach->delete();
+        $coachProfile->delete();
 
-        return to_route('coaches.index')->with('success', 'Coach deleted successfully.')
-            ->with('description', $coach->coach_number.' has been deleted.')
+        return to_route('coaches.index')->with('success', 'Coach profile deleted successfully.')
+            ->with('description', $coachProfile->coach_number.' has been deleted.')
             ->with('timestamp', now()->timestamp);
     }
 }
